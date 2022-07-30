@@ -1,2 +1,2 @@
 # monoglu
-A large file storage with a version control feature.
+A file storage with a version control feature and a CLI/GUI client.
