@@ -1,5 +1,9 @@
+mod components;
+
 mod pages;
 use pages::Home;
+
+mod util;
 
 use yew::prelude::*;
 use yew_router::prelude::*;
