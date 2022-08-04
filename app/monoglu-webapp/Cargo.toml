@@ -7,6 +7,7 @@ edition = "2021"
 
 [dependencies]
 oauth2 = "4"
+wasm-bindgen = "0.2"
 web-sys = "0.3"
 yew = "0.19"
 yew-router = "0.16"
