@@ -1,3 +1,6 @@
+use crate::components::SharedState;
+
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 #[function_component(SearchBar)]
@@ -12,13 +15,25 @@ pub fn search_bar() -> Html {
                     <li><hr class="dropdown-divider" /></li>
                     <li><a class="dropdown-item" href="#">{ "3" }</a></li>
                 </ul>
-                <input class="form-control" type="search" placeholder="Search" />
+                <SearchForm />
             </div>
         </div>
     }
 }
 
-#[function_component(SearchOption)]
-fn search_option() -> Html {
-    html! {}
+#[function_component(SearchForm)]
+fn search_form() -> Html {
+    let context = use_context::<SharedState>().unwrap();
+    
+    let onchange = {
+        let context = std::rc::Rc::clone(&context);
+        Callback::from(move |e: Event| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            context.set(input.value());
+        })
+    };
+
+    html! {
+        <input {onchange} class="form-control" type="search" placeholder={ "Search" } value={ context.to_string() } />
+    }
 }

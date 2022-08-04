@@ -1,6 +1,5 @@
 mod components;
 use components::{
-    init_shared_state,
     SharedState,
 };
 
@@ -30,8 +29,11 @@ fn switch(app_route: &AppRoute) -> Html {
 
 #[function_component(App)]
 pub fn app() -> Html {
+    use std::rc::Rc;
+    let app_state = Rc::new(use_state(|| String::from("Sign In")));
+
     html! {
-        <ContextProvider<SharedState> context={init_shared_state()}>
+        <ContextProvider<SharedState> context={Rc::clone(&app_state)}>
             <BrowserRouter>
                 <Switch<AppRoute> render={Switch::render(switch)} />
             </BrowserRouter>

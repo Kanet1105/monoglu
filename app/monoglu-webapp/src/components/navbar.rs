@@ -1,3 +1,5 @@
+use crate::components::SharedState;
+
 use yew::prelude::*;
 
 #[function_component(NavBar)]
@@ -38,7 +40,9 @@ pub fn navbar() -> Html {
 
 #[function_component(ProfileLogo)]
 fn profile_logo() -> Html {
+    let context = use_context::<SharedState>().unwrap();
+
     html! {
-        <button class="btn btn-outline-light" type="button">{ "Sign In" }</button>
+        <button class="btn btn-outline-light" type="button">{ context.as_str() }</button>
     }
 }
