@@ -21,22 +21,9 @@ pub fn search_bar() -> Html {
         </div>
     }
 }
-
-fn on_input() {
-
-}
-
 #[function_component(SearchForm)]
 fn search_form() -> Html {
     let context = use_context::<SharedState>().unwrap();
-    
-    let onchange = {
-        let context = std::rc::Rc::clone(&context);
-        Callback::from(move |e: Event| {
-            let input: HtmlInputElement = e.target_unchecked_into();
-            context.set(input.value());
-        })
-    };
 
     let oninput = {
         let context = std::rc::Rc::clone(&context);
