@@ -1,13 +1,16 @@
 mod components;
+use components::{
+    init_shared_state,
+    SharedState,
+};
 
 mod pages;
 use pages::Home;
 
-mod util;
-
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+/// AppRoute defines enum for the router
 #[derive(Clone, PartialEq, Routable)]
 enum AppRoute {
     #[at("/")]
@@ -17,6 +20,7 @@ enum AppRoute {
     NotFound,
 }
 
+/// switch() actually does the work.
 fn switch(app_route: &AppRoute) -> Html {
     match app_route {
         AppRoute::Home => html! { <Home /> },
@@ -27,8 +31,10 @@ fn switch(app_route: &AppRoute) -> Html {
 #[function_component(App)]
 pub fn app() -> Html {
     html! {
-        <BrowserRouter>
-            <Switch<AppRoute> render={Switch::render(switch)} />
-        </BrowserRouter>
+        <ContextProvider<SharedState> context={init_shared_state()}>
+            <BrowserRouter>
+                <Switch<AppRoute> render={Switch::render(switch)} />
+            </BrowserRouter>
+        </ContextProvider<SharedState>>
     }
 }
