@@ -1,6 +1,7 @@
 use crate::components::SharedState;
 
-use web_sys::HtmlInputElement;
+use wasm_bindgen::JsCast;
+use web_sys::{HtmlInputElement, EventTarget};
 use yew::prelude::*;
 
 #[function_component(SearchBar)]
@@ -21,6 +22,10 @@ pub fn search_bar() -> Html {
     }
 }
 
+fn on_input() {
+
+}
+
 #[function_component(SearchForm)]
 fn search_form() -> Html {
     let context = use_context::<SharedState>().unwrap();
@@ -33,7 +38,16 @@ fn search_form() -> Html {
         })
     };
 
+    let oninput = {
+        let context = std::rc::Rc::clone(&context);
+        Callback::from(move |e: InputEvent| {
+            let target: Option<EventTarget> = e.target();
+            let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok()).unwrap();
+            context.set(input.value());
+        })
+    };
+
     html! {
-        <input {onchange} class="form-control" type="search" placeholder={ "Search" } value={ context.to_string() } />
+        <input {oninput} class="form-control" type="search" placeholder={ "Search" } value={ context.to_string() } />
     }
 }
