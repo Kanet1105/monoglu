@@ -6,7 +6,7 @@ for local tests:
 cargo install basic-http-server
 ```
 
-## Usage
+## Usage (Windows Only for Now)
 1. Run the following commands on the prompt:
 ```
 rustup target add wasm32-unknown-unknown
