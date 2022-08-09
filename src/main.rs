@@ -8,7 +8,7 @@ fn main() {
 
     let native_options = eframe::NativeOptions::default();
     eframe::run_native(
-        "eframe template",
+        "MONOGLU",
         native_options,
         Box::new(|cc| Box::new(monoglu::TemplateApp::new(cc))),
     );
