@@ -1,10 +1,5 @@
-// Application is accessible as a Struct
-mod app;
+pub mod app;
 pub use app::application::Application;
-
-// Components should be accessible via components namespace for clarity.
-pub mod component;
-
 // ----------------------------------------------------------------------------
 // When compiling for web:
 
