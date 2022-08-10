@@ -1,10 +1,10 @@
-pub struct NavigationBar {
-    menu: Vec<egui::Button>,
-}
+use super::Component;
+
+pub struct NavigationBar;
 
 impl NavigationBar {
     pub fn new() -> Self {
-        Self { menu: Vec::<egui::Button>::new() }
+        Self {}
     }
 }
 
