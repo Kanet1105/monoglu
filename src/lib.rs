@@ -1,5 +1,9 @@
+// Application is accessible as a Struct
 mod app;
-pub use app::TemplateApp;
+pub use app::application::Application;
+
+// Components should be accessible via components namespace for clarity.
+pub mod component;
 
 // ----------------------------------------------------------------------------
 // When compiling for web:
@@ -20,5 +24,5 @@ pub fn start(canvas_id: &str) -> Result<(), eframe::wasm_bindgen::JsValue> {
     // Redirect tracing to console.log and friends:
     tracing_wasm::set_as_global_default();
 
-    eframe::start_web(canvas_id, Box::new(|cc| Box::new(TemplateApp::new(cc))))
+    eframe::start_web(canvas_id, Box::new(|cc| Box::new(Application::new(cc))))
 }

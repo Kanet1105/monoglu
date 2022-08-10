@@ -10,6 +10,6 @@ fn main() {
     eframe::run_native(
         "MONOGLU",
         native_options,
-        Box::new(|cc| Box::new(monoglu::TemplateApp::new(cc))),
+        Box::new(|cc| Box::new(monoglu::Application::new(cc))),
     );
 }

@@ -63,7 +63,7 @@ IF %OPTIMIZE% == 1 (
   wasm-opt "dist\%CRATE_NAME%_bg.wasm" -O2 --fast-math -o "dist\%CRATE_NAME%_bg.wasm"
 )
 
-echo Finished: dist/%CRATE_NAME_SNAKE_CASE%.wasm"
+echo Finished: dist/%CRATE_NAME_SNAKE_CASE%_bg.wasm"
 
 IF %OPEN% == 1 start http://localhost:8080/index.html
 
