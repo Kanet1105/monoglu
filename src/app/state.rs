@@ -1,30 +1,37 @@
-use std::time::{Duration, Instant};
-use std::sync::Arc;
-
-pub type AppState = Arc<State>;
-
-pub fn new_state() -> AppState {
-    Arc::new(State::new())
-}
+use std::ops::Deref;
+use std::sync::{Arc, Mutex};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
-pub struct State {
-    last_rendered: f64,
-    fps: i32,
+pub struct AppState {
+    counter: Arc<Mutex<i32>>,
 }
 
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            last_rendered: 0.0, 
-            fps: 0,
-        }
+impl AppState {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn get_counter(&self) -> String {
+        let counter = self.counter.lock().unwrap();
+        counter.to_string()
+    }
+
+    pub fn increment(&self) {
+        let mut counter = self.counter.lock().unwrap();
+        *counter += 1
+    }
+
+    pub fn decrement(&self) {
+        let mut counter = self.counter.lock().unwrap();
+        *counter -= 1
     }
 }
 
-impl State {
-    pub fn new() -> Self {
-        Self::default()
+impl Default for AppState {
+    fn default() -> Self {
+        Self {
+            counter: Arc::new(Mutex::new(0)),
+        }
     }
 }

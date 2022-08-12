@@ -2,7 +2,7 @@
 /// Every page must implements Page trait.
 pub trait Page {
     // pub fn new(ctx: &egui::Context, state: StateHandle);
-    fn view(ctx: &egui::Context);
+    fn view(ctx: &egui::Context, state: &crate::app::AppState);
 }
 
 pub mod test;
