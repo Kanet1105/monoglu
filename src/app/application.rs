@@ -1,13 +1,17 @@
 use crate::app::page::Test;
+use crate::app::state::State;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct Application {
+    state: State,
 }
 
 impl Default for Application {
     fn default() -> Self {
-        Self {}
+        Self {
+            state: State::new(),
+        }
     }
 }
 
@@ -26,7 +30,7 @@ impl eframe::App for Application {
         eframe::set_value(storage, eframe::APP_KEY, self);
     }
 
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::TopBottomPanel::top("main_layout").show(ctx, |ui| {
             Test::view(ctx);
         });
