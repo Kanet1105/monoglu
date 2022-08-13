@@ -1,2 +1,2 @@
-pub mod app;
+mod app;
 pub use app::application::Application;
