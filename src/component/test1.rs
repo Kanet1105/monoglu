@@ -10,7 +10,8 @@ impl Component for Test1 {
     }
 
     fn view(&self, ctx: &egui::Context, event: Event, state: State) {
-        Navigator::new().view(ctx, event.clone(), state.clone());
+        page::Navigator::new().view(ctx, event.clone(), state.clone());
+        
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.label("Test1 page");
             let counter = {
