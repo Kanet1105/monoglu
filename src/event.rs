@@ -1,13 +1,8 @@
 use crate::prelude::*;
 
-pub enum EventType {
-    Update,
-    Route,
-}
-
 pub type Event = Arc<EventHandle>;
 type EventQueue = Mutex<VecDeque<Box<dyn FnOnce() + 'static>>>;
-type RouterQueue = Mutex<VecDeque<Box<dyn FnOnce() + 'static>>>;
+type RouterQueue = Mutex<VecDeque<Route>>;
 
 pub struct EventHandle {
     event_capacity: usize,
@@ -17,58 +12,56 @@ pub struct EventHandle {
 }
 
 impl EventHandle {
-    pub fn new(event_len: usize, router_len: usize) -> Event {
-        let event = VecDeque::<Box<dyn FnOnce() + 'static>>::with_capacity(event_len);
-        let router = VecDeque::<Box<dyn FnOnce() + 'static>>::with_capacity(router_len);
+    pub fn new(event_cap: usize, router_cap: usize) -> Event {
+        let event = VecDeque::<Box<dyn FnOnce() + 'static>>::with_capacity(event_cap);
+        let router = VecDeque::<Route>::with_capacity(router_cap);
 
         Self {
-            event_capacity: event_len,
-            router_capacity: router_len,
+            event_capacity: event_cap,
+            router_capacity: router_cap,
             event: event.into(),
             router: router.into(),
         }.into()
     }
 
-    pub fn push<F>(&self, event: EventType, callback: F) -> Result<(), Box<dyn std::error::Error>> where 
+    pub fn push<F>(&self, callback: F) -> Result<(), Box<dyn std::error::Error>> where 
         F: FnOnce() + 'static,
     {
-        match event {
-            EventType::Update => {
-                let mut event_guard = self.event.lock().unwrap();
-                if &event_guard.len() == &self.event_capacity {
-                    return Err(format!("event queue (capacity = {}) overflow..", &self.event_capacity).into())
-                } else {
-                    event_guard.push_back(Box::new(callback));
-                    return Ok(())
-                }
-            },
-            EventType::Route => {
-                let mut router_guard = self.router.lock().unwrap();
-                if &router_guard.len() == &self.router_capacity {
-                    let _ = router_guard.pop_front().unwrap();
-                }
-                router_guard.push_back(Box::new(callback));
-                return Ok(())
-            },
+        let mut event_guard = self.event.lock().unwrap();
+        if &event_guard.len() == &self.event_capacity {
+            return Err(format!("event queue (capacity = {}) overflow..", &self.event_capacity).into())
+        } else {
+            event_guard.push_back(Box::new(callback));
+            return Ok(())
         }
     }
 
-    pub fn run_events(&self) {
-        let mut queue_guard = self.event.lock().unwrap();
-        while let Some(event) = queue_guard.pop_front() {
+    pub fn route(&self, route: Route) -> Result<(), Box<dyn std::error::Error>> {
+        let mut router_guard = self.router.lock().unwrap();
+        if &router_guard.len() == &self.router_capacity {
+            let _ = router_guard.pop_front().unwrap();
+        }
+        router_guard.push_back(route);
+        
+        Ok(())
+    }
+
+    pub fn get_route(&self) -> Option<Route> {
+        let router_guard = self.router.lock().unwrap();
+        match router_guard.back() {
+            Some(route) => Some(route.clone()),
+            None => None,
+        }
+    }
+
+    pub fn run_events(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let mut event_guard = self.event.lock().unwrap();
+        while let Some(event) = event_guard.pop_front() {
             event();
         }
-    }
 
-    // pub fn switch_route(&self) -> Result<(), Box<dyn std::error::Error>> {
-    //     let mut router_guard = self.router.lock().unwrap();
-    //     if let Some(route) = router_guard.back() {move || {
-    //         route();
-    //         return Ok(())
-    //     }} else {
-    //         return Err("empty router buffer..".into())
-    //     };
-    // }
+        Ok(())
+    }
 }
 
 #[test]
@@ -76,10 +69,10 @@ fn test_function() {
     let event = EventHandle::new(20, 10);
     
     for n in 0..20 {
-        event.push(EventType::Update, move || {
+        event.push(move || {
             dbg!(n);
         }).unwrap();
     }
 
-    event.run_events();
+    event.run_events().unwrap();
 }
