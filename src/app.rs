@@ -17,26 +17,14 @@ impl Application {
         self.event.run_events().unwrap();
     }
 
-    pub fn switch(&self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let event_handle = self.event.clone();
-        let state_handle = self.state.clone();
-
-        if let Some(route) = self.event.get_route() {
-            match route {
-                Route::Test => Test::new().view(ctx, event_handle, state_handle),
-                Route::Test1 => Test1::new().view(ctx, event_handle, state_handle),
-                Route::Test2 => Test2::new().view(ctx, event_handle, state_handle),
-            }   
-        } else {
-            Test::new().view(ctx, event_handle, state_handle);
-        }
+    pub fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        switch(ctx, frame, self.event.clone(), self.state.clone());
     }
-
 }
 
 impl eframe::App for Application {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         self.update_state();
-        self.switch(ctx, frame);
+        self.view(ctx, frame);
     }
 }
