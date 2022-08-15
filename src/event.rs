@@ -15,6 +15,7 @@ impl Event {
 
 impl Deref for Event {
     type Target = Arc<EventHandle>;
+    
     fn deref(&self) -> &Self::Target {
         &self.0
     }

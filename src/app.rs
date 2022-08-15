@@ -9,7 +9,7 @@ impl Application {
     pub fn new(_creation_context: &eframe::CreationContext<'_>) -> Self {
         Self {
             event: Event::new(20, 5),
-            state: StateHandle::new(),
+            state: State::new(),
         }
     }
 
