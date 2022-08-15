@@ -1,7 +1,33 @@
 use crate::prelude::*;
 
+/// Use newtype idiom instead of type aliasing. Type aliasing has a major disadvantage
+/// with which compiler can safely compile the alias and the original type without 
+/// distinguishing one from the other. Newtype, on the other hand, is a tuple struct that
+/// is edlided on the compile time. In order to avoid re-implementing the inner types'
+/// implementations, implement Deref trait on the newtype.
+pub struct Event(Arc<EventHandle>);
+
+impl Event {
+    pub fn new(event_cap: usize, router_cap: usize) -> Self {
+        Self(Arc::new(EventHandle::new(event_cap, router_cap)))
+    }
+}
+
+impl Deref for Event {
+    type Target = Arc<EventHandle>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Clone for Event {
+    fn clone(&self) -> Self {
+        Self(Arc::clone(&self.0))
+    }
+}
+
 /// Type aliases.
-pub type Event = Arc<EventHandle>;
+/// pub type Event = Arc<EventHandle>;
 type EventQueue = Mutex<VecDeque<Box<dyn FnOnce() + 'static>>>;
 type RouterQueue = Mutex<VecDeque<Route>>;
 
@@ -18,7 +44,7 @@ pub struct EventHandle {
 }
 
 impl EventHandle {
-    pub fn new(event_cap: usize, router_cap: usize) -> Event {
+    pub fn new(event_cap: usize, router_cap: usize) -> Self {
         let event = VecDeque::<Box<dyn FnOnce() + 'static>>::with_capacity(event_cap);
         let router = VecDeque::<Route>::with_capacity(router_cap);
 
@@ -27,7 +53,7 @@ impl EventHandle {
             router_capacity: router_cap,
             event: event.into(),
             router: router.into(),
-        }.into()
+        }
     }
 
     /// The function pushes an event as a closure type. It is not recommended to

@@ -6,6 +6,7 @@ mod state;
 
 pub mod prelude {
     pub use std::collections::{HashMap, VecDeque};
+    pub use std::ops::Deref;
     pub use std::sync::{Arc, Mutex};
 
     // app.rs

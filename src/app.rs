@@ -8,7 +8,7 @@ pub struct Application {
 impl Application {
     pub fn new(_creation_context: &eframe::CreationContext<'_>) -> Self {
         Self {
-            event: EventHandle::new(20, 5),
+            event: Event::new(20, 5),
             state: StateHandle::new(),
         }
     }
