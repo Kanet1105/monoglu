@@ -14,10 +14,11 @@ impl Application {
     }
 
     pub fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        // update states.
+        // Update states.
         self.event.run_events().unwrap();
 
-        // 
+        // Fetch the requested page to view. It refers to the final element
+        // of the router queue in EventHandle.
         switch(ctx, frame, &self.event, &self.state);
     }
 }
