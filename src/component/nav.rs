@@ -9,7 +9,7 @@ impl Component for Navigator {
         Self {}    
     }
 
-    fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame, event: crate::prelude::Event, state: crate::prelude::State) {
+    fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame, event: &Event, state: &State) {
         egui::TopBottomPanel::top("nav").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 let test = ui.button("Test");

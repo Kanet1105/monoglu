@@ -13,18 +13,17 @@ impl Application {
         }
     }
 
-    pub fn update_state(&self) {
-        self.event.run_events().unwrap();
-    }
-
     pub fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        switch(ctx, frame, self.event.clone(), self.state.clone());
+        // update states.
+        self.event.run_events().unwrap();
+
+        // 
+        switch(ctx, frame, &self.event, &self.state);
     }
 }
 
 impl eframe::App for Application {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        self.update_state();
         self.view(ctx, frame);
     }
 }

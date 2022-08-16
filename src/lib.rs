@@ -3,6 +3,7 @@ mod event;
 mod component;
 mod route;
 mod state;
+mod style;
 
 pub mod prelude {
     pub use std::collections::{HashMap, VecDeque};

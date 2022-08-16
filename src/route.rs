@@ -10,7 +10,7 @@ pub enum Route {
 }
 
 /// redirect the user to the new page with updated state and event handle.
-pub fn switch(ctx: &egui::Context, frame: &mut eframe::Frame, event: Event, state: State) {
+pub fn switch(ctx: &egui::Context, frame: &mut eframe::Frame, event: &Event, state: &State) {
     if let Some(route) = event.get_route() {
         match route {
             Route::Test => page::Test::new().view(ctx, frame, event, state),

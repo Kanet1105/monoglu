@@ -31,7 +31,7 @@ pub trait Component {
     fn view(
         &self, ctx: &egui::Context, 
         frame: &mut eframe::Frame, 
-        event: crate::prelude::Event, 
-        state: crate::prelude::State
+        event: &crate::prelude::Event, 
+        state: &crate::prelude::State,
     );
 }

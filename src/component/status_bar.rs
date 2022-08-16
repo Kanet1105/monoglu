@@ -9,7 +9,7 @@ impl Component for StatusBar {
         Self {}
     }
 
-    fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame, event: crate::prelude::Event, state: crate::prelude::State) {
+    fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame, event: &Event, state: &State) {
         let now = ctx.input().time;
         let fps = {
             let state_handle = state.lock().unwrap();
