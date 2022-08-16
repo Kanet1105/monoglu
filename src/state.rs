@@ -35,6 +35,7 @@ pub struct StateHandle {
     pub counter: i32,
     pub counter1: i32,
     pub counter2: i32,
+    pub last_rendered: f64,
 }
 
 impl StateHandle {
@@ -43,6 +44,7 @@ impl StateHandle {
             counter: 0,
             counter1: 1,
             counter2: 2,
+            last_rendered: 0.0,
         }
     }
 }
