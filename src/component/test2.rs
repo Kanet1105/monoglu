@@ -9,8 +9,9 @@ impl Component for Test2 {
         Self {}
     }
 
-    fn view(&self, ctx: &egui::Context, event: Event, state: State) {
-        page::Navigator::new().view(ctx, event.clone(), state.clone());
+    fn view(&self, ctx: &egui::Context, frame: &mut eframe::Frame, event: crate::prelude::Event, state: crate::prelude::State) {
+        widget::Navigator::new().view(ctx, frame, event.clone(), state.clone());
+        widget::StatusBar::new().view(ctx, frame, event.clone(), state.clone());
         
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.label("Test2 page");
@@ -30,7 +31,7 @@ impl Component for Test2 {
                 if increment.clicked() {
                     let state_handle = state.clone();
 
-                    event_handle.push(move|| {
+                    event_handle.push(move || {
                         let mut state_guard = state_handle.lock().unwrap();
                         state_guard.counter += 1;
                         state_guard.counter1 += 1;
@@ -42,7 +43,7 @@ impl Component for Test2 {
                 if decrement.clicked() {
                     let state_handle = state.clone();
 
-                    event_handle.push(move|| {
+                    event_handle.push(move || {
                         let mut state_guard = state_handle.lock().unwrap();
                         state_guard.counter -= 1;
                         state_guard.counter1 -= 1;

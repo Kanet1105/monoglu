@@ -8,7 +8,6 @@ pub mod prelude {
     pub use std::collections::{HashMap, VecDeque};
     pub use std::ops::Deref;
     pub use std::sync::{Arc, Mutex};
-    pub use std::time::{Duration, Instant};
 
     // app.rs
     pub use crate::app::Application;
