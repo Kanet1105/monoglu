@@ -1,4 +1,4 @@
-# Added by cargo
 /target
 Cargo.lock
 dist
+egui
