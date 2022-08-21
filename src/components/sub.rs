@@ -2,7 +2,6 @@ use crate::prelude::*;
 
 #[derive(Clone, PartialEq)]
 pub struct Subscriber {
-    state: ContextManager,
     counter: i32,
 }
 
@@ -11,17 +10,7 @@ impl Component for Subscriber {
     type Properties = ();
 
     fn create(ctx: &Context<Self>) -> Self {
-        let (manager, _) = ctx
-            .link()
-            .context::<ContextManager>(Callback::noop())
-            .expect("No context is found..");
-        let myself = AnyScope::from(ctx.link().clone());
-        manager.insert("Subscriber", myself).unwrap();
-
-        Self {
-            state: manager,
-            counter: 0,
-        }
+        Self { counter: 0, }
     }
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
