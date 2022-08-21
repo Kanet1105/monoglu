@@ -190,12 +190,6 @@ impl PartialEq for ContextManager {
     }
 }
 
-/// Application events are listed under Event type.
-pub enum Event {
-    Increment,
-    Decrement,
-}
-
 #[derive(Clone, Debug)]
 pub struct State {
     pub id: &'static str,

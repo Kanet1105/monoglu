@@ -19,10 +19,11 @@ pub mod prelude {
     pub use crate::components::subscriber::Subscriber;
 
     pub use crate::context_manager::{
-        ContextManager, 
-        Event, 
+        ContextManager,
         State
     };
+
+    pub use crate::Event;
 
     /// external
     pub use gloo_net::http::Request;
@@ -47,6 +48,11 @@ fn switch(route: &Route) -> Html {
         Route::Home => html! { <Test /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
+}
+
+pub enum Event {
+    Increment,
+    Decrement,
 }
 
 #[function_component(App)]
