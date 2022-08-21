@@ -4,6 +4,7 @@ mod pages;
 
 /// The module is used globally.
 pub mod prelude {
+    /// std
     pub use std::cell::RefCell;
     pub use std::collections::HashMap;
     pub use std::fmt::Debug;
@@ -11,15 +12,24 @@ pub mod prelude {
     pub use std::ptr;
     pub use std::rc::Rc;
 
+    /// monoglu
     pub use crate::pages::test::Test;
 
+    pub use crate::components::card::CardList;
     pub use crate::components::prod::Producer;
     pub use crate::components::sub::Subscriber;
 
-    pub use crate::context_manager::{ContextManager, Event, State};
+    pub use crate::context_manager::{
+        manager, 
+        ContextManager, 
+        Event, 
+        State
+    };
 
+    /// external
+    pub use gloo_net::http::Request;
     pub use yew::prelude::*;
-    pub use yew::html::AnyScope;
+    pub use yew::html::{AnyScope, Scope};
     pub use yew_router::prelude::*;
 }
 
