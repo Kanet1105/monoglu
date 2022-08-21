@@ -15,11 +15,10 @@ pub mod prelude {
     /// monoglu
     pub use crate::pages::test::Test;
 
-    pub use crate::components::prod::Producer;
-    pub use crate::components::sub::Subscriber;
+    pub use crate::components::publisher::Publisher;
+    pub use crate::components::subscriber::Subscriber;
 
     pub use crate::context_manager::{
-        manager, 
         ContextManager, 
         Event, 
         State
