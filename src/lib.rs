@@ -15,7 +15,6 @@ pub mod prelude {
     /// monoglu
     pub use crate::pages::test::Test;
 
-    pub use crate::components::card::CardList;
     pub use crate::components::prod::Producer;
     pub use crate::components::sub::Subscriber;
 
