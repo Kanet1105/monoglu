@@ -13,11 +13,6 @@ pub mod prelude {
     pub use std::rc::Rc;
 
     /// monoglu
-    pub use crate::pages::test::Test;
-
-    pub use crate::components::publisher::Publisher;
-    pub use crate::components::subscriber::Subscriber;
-
     pub use crate::context_manager::{
         ContextManager,
         State
@@ -45,7 +40,7 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <Test /> },
+        Route::Home => html! { <h1>{ "MONOGLU" }</h1> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
