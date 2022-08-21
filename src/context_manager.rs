@@ -9,6 +9,15 @@ use crate::prelude::*;
 /// 
 /// // lib.rs
 /// ```
+/// mod publisher;
+/// pub use publisher::Publisher;
+/// 
+/// mod subscriber;
+/// pub use subscriber::Subscriber;
+/// 
+/// mod context_manager;
+/// pub use context_manager::ContextManager;
+/// 
 /// use yew::prelude::*;
 /// 
 /// pub enum Event {
@@ -29,7 +38,8 @@ use crate::prelude::*;
 /// }
 /// 
 /// // publisher.rs
-/// use crate::Event;
+/// use crate::{ContextManager, Event, Subscriber};
+/// 
 /// use yew::prelude::*;
 /// 
 /// #[derive(Clone, PartialEq)]
@@ -65,7 +75,8 @@ use crate::prelude::*;
 /// } 
 /// 
 /// // subscriber.rs
-/// use crate::Event;
+/// use crate::{ContextManager, Event};
+/// 
 /// use yew::prelude::*;
 /// 
 /// #[derive(Clone, PartialEq)]
