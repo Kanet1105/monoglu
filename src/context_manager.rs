@@ -66,7 +66,7 @@ impl PartialEq for ContextManager {
 pub fn manager<T, C>(ctx: &Context<T>) -> Result<C, String>
 where
     T: Component,
-    C: Clone + PartialEq + 'static,
+    C: Clone + Deref + PartialEq + 'static,
 {
     match ctx.link().context::<C>(Callback::noop()) {
         Some(context) => {
