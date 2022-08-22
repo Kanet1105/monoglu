@@ -37,7 +37,7 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <crate::pages::developer::Developer/> },
+        Route::Home => html! { <pages::Developer /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
