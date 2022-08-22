@@ -94,7 +94,8 @@ use crate::prelude::*;
 ///         // to the global state. 
 ///         ContextManager::get(ctx)
 ///             .unwrap()
-///             .share_scope("Subscriber", ctx).unwrap();
+///             .share_scope("Subscriber", ctx)
+///             .unwrap();
 /// 
 ///         Self { counter: 0, }
 ///     }
@@ -141,7 +142,7 @@ impl ContextManager {
     where
         T: Component,
     {
-        let mut state = self.borrow_mut();
+        let mut state = self.0.borrow_mut();
         match state.scope_map.contains_key(id) {
             true => Err(format!("Scope (id == {}) already exists..", id)),
             false => {
@@ -157,7 +158,7 @@ impl ContextManager {
     where
         T: Component,
     {
-        let state = self.borrow();
+        let state = self.0.borrow();
         match state.scope_map.get(id) {
             // downscope does the casting operation from Anyscope to Scope<T> because
             // Anyscope does not implement callback().
@@ -176,14 +177,6 @@ impl Clone for ContextManager {
     }
 }
 
-impl Deref for ContextManager {
-    type Target = Rc<RefCell<State>>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
 impl PartialEq for ContextManager {
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.0, &other.0)
@@ -191,13 +184,13 @@ impl PartialEq for ContextManager {
 }
 
 #[derive(Clone, Debug)]
-pub struct State {
-    pub id: &'static str,
-    pub scope_map: HashMap<String, AnyScope>,
+struct State {
+    id: &'static str,
+    scope_map: HashMap<String, AnyScope>,
 }
 
 impl State {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {
             id: "State",
             scope_map: HashMap::default(),

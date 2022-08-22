@@ -2,22 +2,19 @@ mod components;
 mod context_manager;
 mod pages;
 
-/// The module is used globally.
+/// The module is used globally within the crate.
 pub mod prelude {
     /// std
     pub use std::cell::RefCell;
     pub use std::collections::HashMap;
     pub use std::fmt::Debug;
     pub use std::ops::Deref;
-    pub use std::ptr;
     pub use std::rc::Rc;
 
     /// monoglu
     pub use crate::context_manager::{
         ContextManager,
-        State
     };
-
     pub use crate::Event;
 
     /// external
@@ -40,7 +37,7 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <h1>{ "MONOGLU" }</h1> },
+        Route::Home => html! { <crate::pages::developer::Developer/> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
