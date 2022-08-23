@@ -1,2 +1,2 @@
 mod developer;
-pub use developer::Developer;
+pub use developer::DeveloperHome;

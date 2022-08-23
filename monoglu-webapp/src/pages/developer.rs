@@ -1,8 +1,8 @@
 use crate::prelude::*;
 
-pub struct Developer;
+pub struct DeveloperHome;
 
-impl Component for Developer {
+impl Component for DeveloperHome {
     type Message = ();
     type Properties = ();
 

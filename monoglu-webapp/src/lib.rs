@@ -1,5 +1,6 @@
 mod components;
 mod context_manager;
+mod events;
 mod pages;
 
 /// The module is used globally within the crate.
@@ -8,6 +9,7 @@ pub mod prelude {
     pub use std::cell::RefCell;
     pub use std::collections::HashMap;
     pub use std::fmt::Debug;
+    pub use std::fs;
     pub use std::ops::Deref;
     pub use std::rc::Rc;
 
@@ -15,12 +17,15 @@ pub mod prelude {
     pub use crate::context_manager::{
         ContextManager,
     };
-    pub use crate::Event;
+    pub use crate::events::*;
 
     /// external
+    pub use gloo_file::callbacks::FileReader;
+    pub use gloo_file::File;
     pub use gloo_net::http::Request;
+    pub use web_sys::{Event, HtmlInputElement};
     pub use yew::prelude::*;
-    pub use yew::html::{AnyScope, Scope};
+    pub use yew::html::{AnyScope, Scope, TargetCast};
     pub use yew_router::prelude::*;
 }
 
@@ -37,14 +42,9 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <pages::Developer /> },
+        Route::Home => html! { <pages::DeveloperHome /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
-}
-
-pub enum Event {
-    Increment,
-    Decrement,
 }
 
 #[function_component(App)]
