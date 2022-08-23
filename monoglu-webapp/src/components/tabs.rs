@@ -12,16 +12,13 @@ impl Component for DevTab {
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
         html! {
-            <div class="container-xl">
-                <ul class="nav justify-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">{"Active"}</a>
+            <div class="container-xl d-flex justify-content-center border-bottom mt-4 mb-2">
+                <ul class="nav">
+                    <li class="nav-item me-2">
+                        <a class="nav-link active" aria-current="page" href="#">{"Profile"}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{"Link"}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{"Link"}</a>
+                    <li class="nav-item me-2">
+                        <a class="nav-link" href="#">{"Repositories"}</a>
                     </li>
                 </ul>
             </div>
