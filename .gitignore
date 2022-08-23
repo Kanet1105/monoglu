@@ -1,3 +1,4 @@
 /target
+Cargo.lock
 monoglu-webapp/Cargo.lock
 monoglu-webapp/dist
