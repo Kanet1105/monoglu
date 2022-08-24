@@ -20,10 +20,6 @@ pub mod prelude {
     pub use crate::events::*;
 
     /// external
-    pub use gloo_file::callbacks::FileReader;
-    pub use gloo_file::File;
-    pub use gloo_net::http::Request;
-    pub use web_sys::{Event, HtmlInputElement};
     pub use yew::prelude::*;
     pub use yew::html::{AnyScope, Scope, TargetCast};
     pub use yew_router::prelude::*;
