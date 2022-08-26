@@ -20,6 +20,7 @@ pub mod prelude {
     pub use crate::events::*;
 
     /// external
+    pub use monoglu_core::prelude::*;
     pub use yew::prelude::*;
     pub use yew::html::{AnyScope, Scope, TargetCast};
     pub use yew_router::prelude::*;
@@ -31,6 +32,8 @@ use crate::prelude::*;
 enum Route {
     #[at("/")]
     Home,
+    #[at("/login")]
+    LogIn,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -39,6 +42,7 @@ enum Route {
 fn switch(route: &Route) -> Html {
     match route {
         Route::Home => html! { <pages::DeveloperHome /> },
+        Route::LogIn => html! { <pages::LogIn /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
