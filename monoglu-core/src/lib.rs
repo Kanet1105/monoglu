@@ -1,22 +1,34 @@
 mod fetch;
-mod log;
 mod storage;
 
 pub mod prelude {
     pub use crate::fetch::request;
     pub use crate::get_window;
-    pub use crate::log::{log, log_raw};
-    pub use crate::storage::{WebStorage, WebStorageType};
-
-    pub use wasm_bindgen::prelude::*;
+    pub use crate::storage::{Storage, StorageType};
 }
 
-pub use crate::prelude::*;
+use crate::prelude::*;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
 pub async fn start_app() -> Result<(), JsValue> {
-    let local_storage = WebStorage::new(WebStorageType::LocalStorage)?;
-    let session_storage = WebStorage::new(WebStorageType::SessionStorage)?;
+    wasm_logger::init(wasm_logger::Config::default());
+    // let local = Storage::new(StorageType::Local)?;
+    // local.set_item("counter", "0").unwrap();
+    // let value = local.get_item("counter").unwrap();
+    // log::debug!("{}", value);
+    Ok(())
+}    
+
+#[wasm_bindgen]
+pub async fn looping() -> Result<(), JsValue> {
+    let storage = Storage::new(StorageType::Local)?;
+    for index in 0..1000 {
+        let value = storage.get_item("counter")?;
+        let mut counter = value.parse::<i32>().unwrap();
+        counter += 1;
+        storage.set_item("counter", &counter.to_string())?;
+    }
     Ok(())
 }
 
@@ -50,3 +62,27 @@ pub fn get_window() -> Result<web_sys::Window, JsValue> {
         None => Err(JsValue::from_str("No window available..")),
     }
 }
+
+// Proof : The localstorage is not thread safe. Run below code in multiple tabs to see why.
+// #[wasm_bindgen(start)]
+// pub async fn start_app() -> Result<(), JsValue> {
+//     wasm_logger::init(wasm_logger::Config::default());
+//     let local = Storage::new(StorageType::Local)?;
+//     local.set_item("counter", "0").unwrap();
+//     // looping().await?;
+//     let value = local.get_item("counter")?;
+//     log::debug!("{}", value);
+//     Ok(())
+// }    
+
+// #[wasm_bindgen]
+// pub async fn looping() -> Result<(), JsValue> {
+//     let storage = Storage::new(StorageType::Local)?;
+//     for index in 0..1000 {
+//         let value = storage.get_item("counter")?;
+//         let mut counter = value.parse::<i32>().unwrap();
+//         counter += 1;
+//         storage.set_item("counter", &counter.to_string())?;
+//     }
+//     Ok(())
+// }
