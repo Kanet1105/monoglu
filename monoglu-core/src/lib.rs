@@ -3,7 +3,7 @@ mod storage;
 
 pub mod prelude {
     pub use crate::get_window;
-    pub use crate::fetch::{http_get, http_post};
+    pub use crate::fetch::{http_get, http_post, fetch_request};
     pub use crate::storage::{
         local_storage, 
         session_storage
@@ -13,12 +13,13 @@ pub mod prelude {
 use crate::prelude::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(start)]
-pub async fn start_app() -> Result<(), JsValue> {
-    wasm_logger::init(wasm_logger::Config::default());
-    http_get("127.0.0.1:8080".into()).await?;
-    Ok(())
-} 
+// #[wasm_bindgen(start)]
+// pub async fn start_app() -> Result<(), JsValue> {
+//     wasm_logger::init(wasm_logger::Config::default());
+//     fetch_request();
+//     Ok(())
+// } 
+
 
 /// ### The Window Interface.
 /// 
