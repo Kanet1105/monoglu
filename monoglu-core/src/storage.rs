@@ -1,4 +1,4 @@
-use crate::get_window;
+use crate::prelude::*;
 
 use wasm_bindgen::prelude::*;
 
@@ -85,4 +85,16 @@ impl Storage {
     pub fn clear(&self) -> Result<(), JsValue> {
         self.0.clear()
     }
+}
+
+#[wasm_bindgen]
+pub fn local_storage() -> Result<Storage, JsValue> {
+    let storage = Storage::new(StorageType::Local)?;
+    Ok(storage)
+}
+
+#[wasm_bindgen]
+pub fn session_storage() -> Result<Storage, JsValue> {
+    let storage = Storage::new(StorageType::Session)?;
+    Ok(storage)
 }

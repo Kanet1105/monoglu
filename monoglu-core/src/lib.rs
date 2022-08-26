@@ -2,9 +2,12 @@ mod fetch;
 mod storage;
 
 pub mod prelude {
-    pub use crate::fetch::request;
     pub use crate::get_window;
-    pub use crate::storage::{Storage, StorageType};
+    pub use crate::fetch::{http_get, http_post};
+    pub use crate::storage::{
+        local_storage, 
+        session_storage
+    };
 }
 
 use crate::prelude::*;
@@ -13,24 +16,9 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen(start)]
 pub async fn start_app() -> Result<(), JsValue> {
     wasm_logger::init(wasm_logger::Config::default());
-    // let local = Storage::new(StorageType::Local)?;
-    // local.set_item("counter", "0").unwrap();
-    // let value = local.get_item("counter").unwrap();
-    // log::debug!("{}", value);
+    http_get("127.0.0.1:8080".into()).await?;
     Ok(())
-}    
-
-#[wasm_bindgen]
-pub async fn looping() -> Result<(), JsValue> {
-    let storage = Storage::new(StorageType::Local)?;
-    for index in 0..1000 {
-        let value = storage.get_item("counter")?;
-        let mut counter = value.parse::<i32>().unwrap();
-        counter += 1;
-        storage.set_item("counter", &counter.to_string())?;
-    }
-    Ok(())
-}
+} 
 
 /// ### The Window Interface.
 /// 
