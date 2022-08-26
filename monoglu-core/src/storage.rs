@@ -1,6 +1,3 @@
-use std::ops::{Deref, DerefMut};
-use std::sync::{Arc, Mutex};
-
 use crate::get_window;
 
 use wasm_bindgen::prelude::*;
