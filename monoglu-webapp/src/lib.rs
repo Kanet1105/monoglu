@@ -14,9 +14,7 @@ pub mod prelude {
     pub use std::rc::Rc;
 
     /// monoglu
-    pub use crate::context_manager::{
-        ContextManager,
-    };
+    pub use crate::context_manager::ContextManager;
     pub use crate::events::*;
 
     /// external
@@ -32,8 +30,8 @@ use crate::prelude::*;
 enum Route {
     #[at("/")]
     Home,
-    #[at("/login")]
-    LogIn,
+    #[at("/dev")]
+    Dev,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -41,14 +39,16 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <pages::DeveloperHome /> },
-        Route::LogIn => html! { <pages::LogIn /> },
+        Route::Home => html! { <pages::Home /> },
+        Route::Dev => html! { <pages::DeveloperHome /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
 
 #[function_component(App)]
 pub fn app() -> Html {
+    // Initiate <ContextManager> through which components contexts
+    // are stored and shared under the same <ContextProvider>.
     let manager = ContextManager::new();
 
     html! {
