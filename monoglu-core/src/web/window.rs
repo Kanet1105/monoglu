@@ -23,6 +23,12 @@ use wasm_bindgen::prelude::*;
 /// Generally, anything that can't reasonably pertain to a tab pertains to the window instead.
 /// 
 /// https://developer.mozilla.org/en-US/docs/Web/API/Window
-pub(crate) fn get_window() -> web_sys::Window {
-    web_sys::window().expect_throw("Window object is not available.")
+pub(crate) fn window() -> web_sys::Window {
+    match web_sys::window() {
+        Some(handle) => handle,
+        None => {
+            log::error!("Window object unavailable");
+            panic!();
+        },
+    }
 }
