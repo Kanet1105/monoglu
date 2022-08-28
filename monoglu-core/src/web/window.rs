@@ -1,5 +1,3 @@
-use wasm_bindgen::prelude::*;
-
 /// # The Window Interface.
 /// 
 /// The Window interface represents a window containing a DOM document; 
