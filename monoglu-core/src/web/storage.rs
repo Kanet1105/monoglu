@@ -53,7 +53,7 @@ impl Storage {
             Ok(value) => value.clone(),
             Err(js_value) => {
                 log::error!("{:?}", js_value);
-                panic!("Error wnwrapping Storage::['get_item()']");
+                panic!("Error wnwrapping web_sys::Storage::['get_item()']");
             },
         }
     }
@@ -63,7 +63,7 @@ impl Storage {
             Ok(()) => {},
             Err(js_value) => {
                 log::error!("{:?}", js_value);
-                panic!("Error wnwrapping Storage::['get_item()']");
+                panic!("Error wnwrapping web_sys::Storage::['set_item()']");
             }
         }
     }

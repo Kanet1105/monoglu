@@ -8,6 +8,7 @@ pub mod prelude {
 use std::sync::{Arc, Once};
 
 use crate::web::WebAPI;
+use crate::web::{Method, Mode};
 
 use wasm_bindgen::prelude::*;
 use wasm_logger;
@@ -106,20 +107,30 @@ pub fn web_api() -> Result<Arc<WebAPI>, ()> {
     }
 }
 
-// Example code 
+// Examples
+
 // #[wasm_bindgen(start)]
 // pub async fn start_app() -> Result<(), JsValue> {
 //     init_once().unwrap();
 //     let a = web_api().unwrap();
 //     let b = web_api().unwrap();
-
+// 
 //     // Assert if two Arc<WebAPI> point to the same underlying data object.
 //     assert!(Arc::ptr_eq(&a, &b));
-
+// 
 //     // Print a log to see the actual address.
 //     log::info!("{:?}, {:?}", Arc::as_ptr(&a), Arc::as_ptr(&b));
-
+// 
 //     // access the web api through the public interface.
+// 
+//     Ok(())
+// }
 
+// #[wasm_bindgen(start)]
+// pub async fn start_app() -> Result<(), JsValue> {
+//     init_once().unwrap();
+//     let api = web_api().unwrap();
+//     let response = api.fetch("https://google.com", Method::Get, Mode::CORS);
+//     api.task_spawn(response);
 //     Ok(())
 // }
