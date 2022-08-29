@@ -1,5 +1,6 @@
-use wasm_bindgen::prelude::*;
 use super::window;
+
+use wasm_bindgen::prelude::*;
 
 /// # Local Storage
 /// 
@@ -39,14 +40,30 @@ impl Storage {
     pub fn new(storage_type: StorageType) -> Self {
         match storage_type {
             StorageType::Local => {
-                let local_storage = local_storage();
-
-                Self(local_storage)
+                Self(local_storage())
             },
             StorageType::Session => {
-                let session_storage = session_storage();
+                Self(session_storage())
+            }
+        }
+    }
 
-                Self(session_storage)
+    pub fn get_item(&self, key: &str) -> Option<String> {
+        match self.0.get_item(key) {
+            Ok(value) => value.clone(),
+            Err(js_value) => {
+                log::error!("{:?}", js_value);
+                panic!("Error wnwrapping Storage::['get_item()']");
+            },
+        }
+    }
+
+    pub fn set_item(&self, key: &str, value: &str) {
+        match self.0.set_item(key, value) {
+            Ok(()) => {},
+            Err(js_value) => {
+                log::error!("{:?}", js_value);
+                panic!("Error wnwrapping Storage::['get_item()']");
             }
         }
     }
