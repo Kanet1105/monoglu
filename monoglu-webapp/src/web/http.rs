@@ -3,12 +3,6 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
 #[wasm_bindgen]
-pub enum RequestMethod {
-    Get,
-    Post,
-}
-
-#[wasm_bindgen]
 pub async fn get(url: String) -> Result<JsValue, JsValue> {
     let mut options = web_sys::RequestInit::new();
     options.method("GET");
