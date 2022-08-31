@@ -2,6 +2,7 @@ mod components;
 mod context_manager;
 mod events;
 mod pages;
+mod web;
 
 /// The module is used globally within the crate.
 pub mod prelude {
@@ -16,9 +17,10 @@ pub mod prelude {
     /// monoglu
     pub use crate::context_manager::ContextManager;
     pub use crate::events::*;
+    pub use crate::web::http;
 
     /// external
-    pub use monoglu_core::prelude::*;
+    pub use wasm_bindgen_futures::spawn_local;
     pub use yew::prelude::*;
     pub use yew::html::{AnyScope, Scope, TargetCast};
     pub use yew_router::prelude::*;
