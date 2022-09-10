@@ -12,3 +12,5 @@ tokio = { version = "1", features = ["full"] }
 criterion = "0.3"
 
 [[bench]]
+name = "file_io"
+harness = false
