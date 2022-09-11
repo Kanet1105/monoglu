@@ -6,6 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = { git = "https://github.com/tokio-rs/axum", branch = "0.5.x" }
+serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 
 [dev-dependencies]
