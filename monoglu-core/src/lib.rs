@@ -1,22 +1,34 @@
-use std::env;
-use std::fs;
-use std::path::PathBuf;
+mod storage;
 
-pub type Exception = Box<dyn std::error::Error>;
+use axum::{
+    body::Bytes,
+    error_handling::HandleErrorLayer,
+    handler::Handler,
+    http::StatusCode,
+    response::{IntoResponse, Response},
+    routing::{get, post},
+    Router,
+};
+use std::net::SocketAddr;
+use serde::{Deserialize, Serialize};
 
-pub fn storage_path() -> Result<PathBuf, Exception> {
-    let mut base_path = env::current_dir()?;
-    base_path.push("storage");
-    Ok(base_path)
+pub async fn run_app() {
+    let subscriber = tracing_subscriber::fmt()
+        .with_line_number(true)
+        .with_thread_ids(true)
+        .finish();
+
+    let app = Router::new()
+        .route("/:file_name", get(get_file));
+
+    let address = SocketAddr::from(([127, 0, 0, 1], 8080));
+    tracing::debug!("Listening on {}..", address);
+    axum::Server::bind(&address)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
 
-pub fn load_file(path: &PathBuf, file_name: &str) -> Result<(), Exception> {
-    let mut file_path = PathBuf::new();
-    file_path.push(path);
-    file_path.push(file_name);
-
-    let file = fs::File::options()
-        .read(true)
-        .open(path)?;
-    Ok(())
+pub async fn get_file(file_name: String) -> String {
+    file_name
 }
