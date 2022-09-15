@@ -12,19 +12,11 @@ pub type Exception = Box<dyn std::error::Error>;
 /// Pub enum ConfigError {
 ///     // "Config.toml" file does not exist in the current dir.
 ///     PathError(PathBuf),
-///
-///     // The field does not exist in the given key table.
-///     // KeyError(key, table)
-///     KeyError(String, String),
-///
-///     // The table is empty.
-///     // EmptyTable(table)
 ///     EmptyTable(String)
 /// }
 /// ```
 pub enum ConfigError {
     PathError(PathBuf),
-    KeyError(String, String),
     EmptyTable(String),
 }
 
@@ -44,11 +36,8 @@ impl Display for ConfigError {
                     path.to_str().unwrap()
                 )
             }
-            Self::KeyError(key, table) => {
-                write!(f, "['{}'] does not exist in the table ['{}']", key, table)
-            }
             Self::EmptyTable(table) => {
-                write!(f, "['{}'] table is empty.", table)
+                write!(f, "'{}' is empty.", table)
             }
         }
     }
