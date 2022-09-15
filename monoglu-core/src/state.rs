@@ -1,4 +1,4 @@
-use crate::error::StateError;
+use crate::error::ConfigError;
 use crate::Exception;
 use config::{self, Config};
 use sled;
@@ -42,6 +42,7 @@ impl InnerState {
     pub fn new() -> Result<Self, Exception> {
         let config = load_config()?;
         let storage = load_storage(&config)?;
+        let _ = load_auth_client(&config)?;
 
         Ok(Self {
             
@@ -64,7 +65,7 @@ fn load_config() -> Result<Config, Exception> {
             info!("Load configurations at {}", config_path.display());
             Ok(config)
         }
-        false => Err(StateError::ConfigPathError(config_path).into()),
+        false => Err(ConfigError::ConfigPathError(config_path).into()),
     }
 }
 
@@ -83,7 +84,7 @@ fn load_storage(config: &Config) -> Result<sled::Db, Exception> {
                 .collect();
             path
         },
-        None => return Err(StateError::ConfigKeyError(key, table).into()),
+        None => return Err(ConfigError::ConfigKeyError(key, table).into()),
     };
     let storage = sled::open(storage_path)?;
     if storage.was_recovered() {
@@ -93,5 +94,7 @@ fn load_storage(config: &Config) -> Result<sled::Db, Exception> {
 }
 
 fn load_auth_client(config: &Config) -> Result<(), Exception> {
+    let table = "oauth2".to_string();
+    let config_map = config.get_table(&table)?;
     Ok(())
 }

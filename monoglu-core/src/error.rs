@@ -4,22 +4,30 @@ use std::{
     path::PathBuf,
 };
 
-/// Error related to "state" module.
-pub enum StateError {
-    // "Config.toml" file does not exist at the current dir.
+/// Error related to "load_config" module.
+/// 
+/// ```
+/// Pub enum ConfigError {
+///     // "Config.toml" file does not exist at the current dir.
+///     ConfigPathError(PathBuf),
+/// 
+///     // The field does not exist in the given key table.
+///     // ConfigKeyError(Key, Table)
+///     ConfigKeyError(String, String),
+/// }
+/// ```
+pub enum ConfigError {
     ConfigPathError(PathBuf),
-
-    // The path field does not exist in [persistence] table.
     ConfigKeyError(String, String),
 }
 
-impl Debug for StateError {
+impl Debug for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", *self)
     }
 }
 
-impl Display for StateError {
+impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::ConfigPathError(path) => write!(
@@ -36,4 +44,4 @@ impl Display for StateError {
     }
 }
 
-impl Error for StateError {}
+impl Error for ConfigError {}
