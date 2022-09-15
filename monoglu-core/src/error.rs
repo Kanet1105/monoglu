@@ -4,21 +4,28 @@ use std::{
     path::PathBuf,
 };
 
-/// Error related to "load_config" module.
-/// 
+pub type Exception = Box<dyn std::error::Error>;
+
+/// Errors related to "config.rs" module.
+///
 /// ```
 /// Pub enum ConfigError {
-///     // "Config.toml" file does not exist at the current dir.
-///     ConfigPathError(PathBuf),
-/// 
+///     // "Config.toml" file does not exist in the current dir.
+///     PathError(PathBuf),
+///
 ///     // The field does not exist in the given key table.
-///     // ConfigKeyError(Key, Table)
-///     ConfigKeyError(String, String),
+///     // KeyError(key, table)
+///     KeyError(String, String),
+///
+///     // The table is empty.
+///     // EmptyTable(table)
+///     EmptyTable(String)
 /// }
 /// ```
 pub enum ConfigError {
-    ConfigPathError(PathBuf),
-    ConfigKeyError(String, String),
+    PathError(PathBuf),
+    KeyError(String, String),
+    EmptyTable(String),
 }
 
 impl Debug for ConfigError {
@@ -30,16 +37,19 @@ impl Debug for ConfigError {
 impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::ConfigPathError(path) => write!(
-                f,
-                "The config file does not exist at {}",
-                path.to_str().unwrap()
-            ),
-            Self::ConfigKeyError(key, table) => write!(
-                f,
-                "['{}'] does not exist in the table ['{}']",
-                key, table,
-            )
+            Self::PathError(path) => {
+                write!(
+                    f,
+                    "The config file does not exist at {}",
+                    path.to_str().unwrap()
+                )
+            }
+            Self::KeyError(key, table) => {
+                write!(f, "['{}'] does not exist in the table ['{}']", key, table)
+            }
+            Self::EmptyTable(table) => {
+                write!(f, "['{}'] table is empty.", table)
+            }
         }
     }
 }
