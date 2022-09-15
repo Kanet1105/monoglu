@@ -6,7 +6,10 @@ use std::{
 
 /// Error related to "state" module.
 pub enum StateError {
+    // "Config.toml" file does not exist at the current dir.
     ConfigPathError(PathBuf),
+
+    // The path field does not exist in [persistence] table.
     ConfigKeyError(String, String),
 }
 
@@ -26,7 +29,7 @@ impl Display for StateError {
             ),
             Self::ConfigKeyError(key, table) => write!(
                 f,
-                "['{}'] does not exist inside the table ['{}']",
+                "['{}'] does not exist in the table ['{}']",
                 key, table,
             )
         }
