@@ -3,4 +3,5 @@
 members = [
     "monoglu-webapp",
     "monoglu-core",
+    "monoglu-storage",
 ]
