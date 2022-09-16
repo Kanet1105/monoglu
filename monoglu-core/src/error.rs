@@ -1,3 +1,8 @@
+use actix_web::{
+    error,
+    http::{header::ContentType, StatusCode},
+    HttpResponse,
+};
 use std::{
     error::Error,
     fmt::{Debug, Display},
@@ -17,7 +22,7 @@ pub type Exception = Box<dyn std::error::Error>;
 /// ```
 pub enum ConfigError {
     PathError(PathBuf),
-    EmptyTable(String),
+    EmptyTableError(String),
 }
 
 impl Debug for ConfigError {
@@ -29,14 +34,14 @@ impl Debug for ConfigError {
 impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::PathError(path) => {
+            ConfigError::PathError(path) => {
                 write!(
                     f,
                     "The config file does not exist at {}",
                     path.to_str().unwrap()
                 )
             }
-            Self::EmptyTable(table) => {
+            ConfigError::EmptyTableError(table) => {
                 write!(f, "'{}' is empty.", table)
             }
         }
@@ -44,3 +49,36 @@ impl Display for ConfigError {
 }
 
 impl Error for ConfigError {}
+
+/// Errors are returned to the user and visible on the browser.
+pub enum UserError {
+    InternalError,
+}
+
+impl Debug for UserError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", *self)
+    }
+}
+
+impl Display for UserError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::InternalError => write!(f, "Internal Error"),
+        }
+    }
+}
+
+impl error::ResponseError for UserError {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .insert_header(ContentType::html())
+            .body(self.to_string())
+    }
+
+    fn status_code(&self) -> StatusCode {
+        match *self {
+            Self::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
