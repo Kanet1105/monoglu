@@ -8,7 +8,7 @@ use actix_web::{
     http::{header, StatusCode},
     web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
-use auth::{AuthClient, AuthClientBuilder};
+use auth::{AuthClient, AuthClientBuilder, AuthRequest};
 use config::Config;
 use std::collections::HashMap;
 use tracing::{error, info};
@@ -62,8 +62,8 @@ pub async fn auth_init(
 
     if let Some(auth_client) = client_group.get(&target) {
         let auth_url = auth_client.auth_url();
+        info!("{}", &auth_url);
         let a = format!("<a href={} />", auth_url);
-
         let response = HttpResponse::build(StatusCode::OK)
             .content_type("text/html; charset=utf-8")
             .body(a);
@@ -74,8 +74,8 @@ pub async fn auth_init(
 }
 
 #[get("/auth/ok")]
-pub async fn auth_ok(auth_info: web::Query<String>) -> Result<HttpResponse, UserError> {
-    info!("{:?}", auth_info);
+pub async fn auth_ok(query: web::Path<String>) -> Result<HttpResponse, UserError> {
+    info!("{:?}", query);
     // let info = user_info.into_inner();
     let response = HttpResponse::build(StatusCode::OK)
         .content_type("text/html; charset=utf-8")
