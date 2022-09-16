@@ -1,50 +1,84 @@
 mod auth;
-mod config;
 mod error;
-mod state;
 mod storage;
 
-use crate::error::Exception;
-use axum::{
-    // body::Bytes,
-    // error_handling::HandleErrorLayer,
-    handler::Handler,
-    // http::StatusCode,
-    // response::{IntoResponse, Response},
-    routing::{get, post},
-    Router,
+pub use crate::error::*;
+use actix_web::{
+    get,
+    http::{header, StatusCode},
+    web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
-use state::SharedState;
-// use serde::{Deserialize, Serialize};
-use std::{env, net::SocketAddr};
+use auth::{AuthClient, AuthClientBuilder};
+use config::Config;
+use std::collections::HashMap;
 use tracing::{error, info};
-use tracing_subscriber;
 
-pub async fn run_app() {
-    // env::set_var("RUST_BACKTRACE", "full");
+/// Read config once and for all at the beginning of building the state.
+/// Once the Config is returned, pass the config as a reference to all
+/// the other "load_" prefixed functions.
+pub fn load_config() -> Result<Config, Exception> {
+    let mut config_path = std::env::current_dir()?;
+    config_path.push("Config.toml");
 
-    // Initialize the global tracing subscriber.
-    tracing_subscriber::fmt()
-        .with_line_number(true)
-        .with_thread_ids(true)
-        .init();
-
-    let shared_state = SharedState::new().map_err(|error| {
-        error!(error);
-        panic!();
-    });
-
-    // let database = Storage::new().await.unwrap();
-    // info!("Connected to the database.");
-    let app = Router::new().route("/", get(google_signin));
-    info!("Initialize the server.");
-
-    let address = SocketAddr::from(([127, 0, 0, 1], 8080));
-    info!("Listening on {}..", address);
-    axum::Server::bind(&address)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    match config_path.exists() {
+        true => {
+            let config = Config::builder()
+                .add_source(config::File::from(config_path.as_ref()))
+                .build()?;
+            info!("Load configurations at {}", config_path.display());
+            Ok(config)
+        }
+        false => Err(ConfigError::PathError(config_path).into()),
+    }
 }
 
-pub async fn google_signin() {}
+pub async fn run_app() -> Result<(), Exception> {
+    let config = load_config()?;
+    info!("Initialized configurations");
+
+    let client_group = web::Data::new(AuthClientBuilder::from_config(&config)?);
+    info!("Successfully loaded auth clients.");
+
+    info!("Initializing the server at http://127.0.0.1:8080..");
+    HttpServer::new(move || {
+        App::new()
+            .app_data(client_group.clone())
+            .service(auth_init)
+            .service(auth_ok)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+    .unwrap();
+    Ok(())
+}
+
+#[get("/auth/{target}")]
+pub async fn auth_init(
+    client_group: web::Data<HashMap<String, AuthClient>>,
+    target_service: web::Path<String>,
+) -> Result<HttpResponse, UserError> {
+    let target = target_service.into_inner();
+
+    if let Some(auth_client) = client_group.get(&target) {
+        let auth_url = auth_client.auth_url();
+        let a = format!("<a href={} />", auth_url);
+
+        let response = HttpResponse::build(StatusCode::OK)
+            .content_type("text/html; charset=utf-8")
+            .body(a);
+        Ok(response)
+    } else {
+        Err(UserError::InternalError)
+    }
+}
+
+#[get("/auth/ok")]
+pub async fn auth_ok(auth_info: web::Query<String>) -> Result<HttpResponse, UserError> {
+    info!("{:?}", auth_info);
+    // let info = user_info.into_inner();
+    let response = HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body("Hello, login!");
+    Ok(response)
+}
