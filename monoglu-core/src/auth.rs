@@ -51,7 +51,7 @@ impl AuthClientBuilder {
             Some(TokenUrl::new(self.token_url)?),
         )
         .set_redirect_uri(RedirectUrl::new(self.redirect_uri)?);
-        
+
         let scopes: Vec<Scope> = self.scopes
             .into_iter()
             .map(|x| Scope::new(x))
@@ -80,6 +80,6 @@ impl AuthClientBuilder {
 
 #[derive(Debug, Deserialize)]
 pub struct AuthRequest {
-    code: String,
     state: String,
+    code: String,
 }

@@ -1,6 +1,5 @@
 mod auth;
 mod error;
-mod storage;
 
 pub use crate::error::*;
 use actix_web::{
@@ -43,6 +42,7 @@ pub async fn run_app() -> Result<(), Exception> {
     HttpServer::new(move || {
         App::new()
             .app_data(client_group.clone())
+            .service(index)
             .service(auth_init)
             .service(auth_ok)
     })
@@ -53,17 +53,35 @@ pub async fn run_app() -> Result<(), Exception> {
     Ok(())
 }
 
+#[get("/")]
+pub async fn index(
+    clients: web::Data<HashMap<String, AuthClient>>,
+) -> HttpResponse {
+    let mut href = String::new();
+    for (name, _) in clients.iter() {
+        let a = format!(
+            "<div><a href={}>{}</a></div>",
+            format!("auth/{}", name),
+            name,
+        );
+        href.push_str(&a);
+    }
+
+    let response = HttpResponse::build(StatusCode::OK)
+        .content_type("text/html; charset=utf-8")
+        .body(href);
+    response
+}
+
 #[get("/auth/{target}")]
 pub async fn auth_init(
     client_group: web::Data<HashMap<String, AuthClient>>,
     target_service: web::Path<String>,
 ) -> Result<HttpResponse, UserError> {
     let target = target_service.into_inner();
-
     if let Some(auth_client) = client_group.get(&target) {
         let auth_url = auth_client.auth_url();
-        info!("{}", &auth_url);
-        let a = format!("<a href={} />", auth_url);
+        let a = format!("<a href={}>link</a>", auth_url);
         let response = HttpResponse::build(StatusCode::OK)
             .content_type("text/html; charset=utf-8")
             .body(a);
@@ -73,12 +91,13 @@ pub async fn auth_init(
     }
 }
 
-#[get("/auth/ok")]
-pub async fn auth_ok(query: web::Path<String>) -> Result<HttpResponse, UserError> {
-    info!("{:?}", query);
+#[get("/auth/{target}/ok")]
+pub async fn auth_ok(auth_query: web::Query<AuthRequest>) -> impl Responder {
+    info!("Hello, login!");
+    // info!("{:?}", auth_query);
     // let info = user_info.into_inner();
-    let response = HttpResponse::build(StatusCode::OK)
-        .content_type("text/html; charset=utf-8")
-        .body("Hello, login!");
-    Ok(response)
+    // let response = HttpResponse::build(StatusCode::OK)
+    //     .content_type("text/html; charset=utf-8")
+    //     .body("Hello, login!");
+    HttpResponse::Ok().finish()
 }
