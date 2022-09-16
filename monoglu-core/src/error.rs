@@ -78,7 +78,7 @@ impl error::ResponseError for UserError {
 
     fn status_code(&self) -> StatusCode {
         match *self {
-            Self::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            UserError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
