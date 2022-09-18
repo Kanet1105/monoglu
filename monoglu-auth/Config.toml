@@ -1,0 +1,37 @@
+# 아래와 같은 포맷으로 스토리지 경로 설정
+# 
+# examples
+# path = ["C:/", "data"] -> 윈도우 절대경로 설정.
+# path = ["tmp", "data"] -> 유닉스 절대경로 설정.
+#
+# capacity 는 gigabyte 단위.
+#
+# examples
+# capacity = 4 -> 4 GB
+# capacity = 8 -> 8 GB
+# 
+[storage]
+path = ["D:/", "RustProjects", "monoglu", "monoglu-core", "data"]
+capacity = 4
+
+# WARNING!
+#
+# "id", "secret" 넣은 상태로 깃헙 업로드 절대금지!
+#
+[oauth2]
+
+[oauth2.github]
+id = "6a27e6d29f55b713289f"
+secret = "452bfdfc17b3faee58d5481520f6acea6074ff53"
+auth_url = "https://github.com/login/oauth/authorize"
+token_url = "https://github.com/login/oauth/access_token"
+redirect_uri = "http://127.0.0.1:8080/auth/github/ok"
+scopes = ["user"]
+
+[oauth2.google]
+id = "265829682073-9hir01fo0k0usigjbvikvo1jte99kotv.apps.googleusercontent.com"
+secret = "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"
+auth_url = "https://accounts.google.com/o/oauth2/v2/auth"
+token_url = "https://oauth2.googleapis.com/token"
+redirect_uri = "http://127.0.0.1:8080/auth/google/ok"
+scopes = ["openid"]
