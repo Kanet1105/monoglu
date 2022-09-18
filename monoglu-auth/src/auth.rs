@@ -10,7 +10,7 @@ use serde::Deserialize;
 use std::{
     collections::HashMap,
     mem::replace,
-    ops::{Deref, DerefMut},
+    ops::Deref,
     sync::Mutex,
 };
 use tracing::info;

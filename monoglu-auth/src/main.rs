@@ -1,5 +1,5 @@
-use monoglu_core::run_app;
-use monoglu_core::Exception;
+use monoglu_auth::run_app;
+use monoglu_auth::Exception;
 
 #[actix_web::main]
 async fn main() -> Result<(), Exception> {
