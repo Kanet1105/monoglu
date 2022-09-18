@@ -2,7 +2,7 @@ mod auth;
 mod error;
 
 pub use crate::error::*;
-use actix_web::{get, http::StatusCode, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, http::StatusCode, web, App, HttpResponse, HttpServer};
 use auth::{AuthCache, AuthClient, AuthClientBuilder, AuthQuery};
 use config::Config;
 use std::collections::HashMap;
