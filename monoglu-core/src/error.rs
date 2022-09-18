@@ -34,14 +34,14 @@ impl Debug for ConfigError {
 impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ConfigError::PathError(path) => {
+            Self::PathError(path) => {
                 write!(
                     f,
                     "The config file does not exist at {}",
                     path.to_str().unwrap()
                 )
             }
-            ConfigError::EmptyTableError(table) => {
+            Self::EmptyTableError(table) => {
                 write!(f, "'{}' is empty.", table)
             }
         }
@@ -53,6 +53,8 @@ impl Error for ConfigError {}
 /// Errors are returned to the user and visible on the browser.
 pub enum UserError {
     InternalError,
+    AuthClientNotFound,
+    CsrfTokenExpired,
 }
 
 impl Debug for UserError {
@@ -65,6 +67,8 @@ impl Display for UserError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InternalError => write!(f, "Internal Error"),
+            Self::AuthClientNotFound => write!(f, "Oauth2 client not found."),
+            Self::CsrfTokenExpired => write!(f, "CSRF token is expired."),
         }
     }
 }
@@ -78,7 +82,9 @@ impl error::ResponseError for UserError {
 
     fn status_code(&self) -> StatusCode {
         match *self {
-            UserError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::AuthClientNotFound => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::CsrfTokenExpired => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

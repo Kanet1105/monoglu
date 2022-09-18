@@ -1,13 +1,56 @@
 use crate::error::*;
 use config::Config;
 use oauth2::basic::BasicClient;
+use oauth2::reqwest::async_http_client;
 use oauth2::{
-    AuthUrl, AuthorizationCode, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, RedirectUrl,
-    Scope, TokenResponse, TokenUrl,
+    AuthUrl, AuthorizationCode, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge,
+    PkceCodeVerifier, RedirectUrl, Scope, TokenResponse, TokenUrl,
 };
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    mem::replace,
+    ops::{Deref, DerefMut},
+    sync::Mutex,
+};
+use tracing::info;
 use url::Url;
+
+pub struct AuthCache(Mutex<HashMap<String, PkceCodeVerifier>>);
+
+impl AuthCache {
+    pub fn new() -> Self {
+        let inner = HashMap::<String, PkceCodeVerifier>::new();
+        Self(Mutex::new(inner))
+    }
+
+    pub fn new_csrf_token(&self, csrf_token: CsrfToken, pkce_verifier: PkceCodeVerifier) {
+        let mut cache_guard = self.lock().unwrap();
+
+        let csrf_string: String = csrf_token.secret().into();
+        cache_guard.insert(csrf_string, pkce_verifier);
+    }
+
+    pub fn find_pkce_verifier(&self, csrf_token: &str) -> Result<PkceCodeVerifier, UserError> {
+        let mut cache_guard = self.lock().unwrap();
+
+        match cache_guard.get_mut(csrf_token) {
+            Some(pkce_verifier) => {
+                let verifier = replace(pkce_verifier, PkceCodeVerifier::new("".to_string()));
+                Ok(verifier)
+            },
+            None => Err(UserError::AuthClientNotFound),
+        }
+    }
+}
+
+impl Deref for AuthCache {
+    type Target = Mutex<HashMap<String, PkceCodeVerifier>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 #[derive(Clone)]
 pub struct AuthClient {
@@ -20,15 +63,30 @@ impl AuthClient {
         Self { client, scopes }
     }
 
-    pub fn auth_url(&self) -> Url {
+    pub fn auth_url(&self) -> (Url, CsrfToken, PkceCodeVerifier) {
         let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
         let (auth_url, csrf_token) = self
             .client
             .authorize_url(CsrfToken::new_random)
             .add_scopes(self.scopes.clone())
-            // .set_pkce_challenge(pkce_challenge)
+            .set_pkce_challenge(pkce_challenge)
             .url();
-        auth_url
+        (auth_url, csrf_token, pkce_verifier)
+    }
+
+    pub async fn token_url(
+        &self,
+        auth_code: String,
+        pkce_verifier: PkceCodeVerifier,
+    ) -> Result<(), Exception> {
+        let token = self
+            .client
+            .exchange_code(AuthorizationCode::new(auth_code))
+            .set_pkce_verifier(pkce_verifier)
+            .request_async(async_http_client)
+            .await?;
+        info!("{:?}", token);
+        Ok(())
     }
 }
 
@@ -52,10 +110,7 @@ impl AuthClientBuilder {
         )
         .set_redirect_uri(RedirectUrl::new(self.redirect_uri)?);
 
-        let scopes: Vec<Scope> = self.scopes
-            .into_iter()
-            .map(|x| Scope::new(x))
-            .collect();
+        let scopes: Vec<Scope> = self.scopes.into_iter().map(|x| Scope::new(x)).collect();
 
         let auth_client = AuthClient::new(client, scopes);
         Ok(auth_client)
@@ -79,7 +134,7 @@ impl AuthClientBuilder {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct AuthRequest {
-    state: String,
-    code: String,
+pub struct AuthQuery {
+    pub state: String,
+    pub code: String,
 }
