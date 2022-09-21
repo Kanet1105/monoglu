@@ -1,5 +1,5 @@
 # monoglu
-A file storage with a version control feature and CLI/GUI client support is on the way.
+Aims to be the pinnacle of web-crawling service.
 
 ## monoglu-webapp
 It is built on top of Yew which is a modern Rust framework for creating multi-threaded front-end web apps using WebAssembly.
