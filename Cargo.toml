@@ -5,4 +5,5 @@ members = [
     "monoglu-storage",
     "monoglu-webapp",
     "monoglu-worker",
+    "monoglu-queue",
 ]
