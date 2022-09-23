@@ -21,21 +21,4 @@ impl Display for ConfigError {
     }
 }
 
-impl std::error::Error for ConfigError {}
-
-#[test]
-fn print_error() {
-    println!("{:?}", ConfigError::ParsingError);
-}
-
-#[test]
-fn fire_drill() {
-    fire(true).unwrap();
-}
-
-fn fire(is_err: bool) -> Result<(), Box<dyn std::error::Error>> {
-    match is_err {
-        true => Err(ConfigError::ParsingError.into()),
-        false => Ok(()),
-    }
-}
+impl Error for ConfigError {}
