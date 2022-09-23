@@ -1,5 +1,5 @@
 use anyhow::Error;
-use exercise::run_app;
+use monoglu_worker::run_app;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
