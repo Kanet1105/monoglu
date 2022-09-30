@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use yew::prelude::*;
 
 pub struct GlobalNavBar;
 
