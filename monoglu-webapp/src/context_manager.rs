@@ -6,7 +6,7 @@ use std::{
     rc::Rc,
 };
 use yew::{
-    html::{AnyScope, Scope, TargetCast},
+    html::{AnyScope, Scope},
     prelude::*,
 };
 /// ContextManager which serves as a shared reference to the
