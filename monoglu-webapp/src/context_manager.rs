@@ -1,5 +1,14 @@
-use crate::prelude::*;
-
+use std::{
+    cell::RefCell,
+    collections::HashMap,
+    error::Error,
+    fmt::{Debug, Display},
+    rc::Rc,
+};
+use yew::{
+    html::{AnyScope, Scope, TargetCast},
+    prelude::*,
+};
 /// ContextManager which serves as a shared reference to the
 /// 'T' provided by ContextProvider<T> component where T == State.
 /// ContextManager must be called inside the function to which
@@ -124,7 +133,7 @@ impl ContextManager {
     }
 
     /// Get a clone of ContextManager under a given context.
-    pub fn get<T>(ctx: &Context<T>) -> Result<Self, String>
+    pub fn get<T>(ctx: &Context<T>) -> Result<Self, ContextManagerError>
     where
         T: Component,
     {
@@ -133,18 +142,18 @@ impl ContextManager {
                 let (manager, _) = context;
                 Ok(manager.clone())
             }
-            None => Err(format!("No context found..")),
+            None => Err(ContextManagerError::ContextUnavailable),
         }
     }
 
     /// Share the current context which could be accessed by the given id.
-    pub fn share_scope<T>(&self, id: &str, ctx: &Context<T>) -> Result<(), String>
+    pub fn share_scope<T>(&self, id: &str, ctx: &Context<T>) -> Result<(), ContextManagerError>
     where
         T: Component,
     {
         let mut state = self.0.borrow_mut();
         match state.scope_map.contains_key(id) {
-            true => Err(format!("Scope (id == {}) already exists..", id)),
+            true => Err(ContextManagerError::ScopeAlreadyExists(id.into())),
             false => {
                 let scope = AnyScope::from(ctx.link().clone());
                 state.scope_map.insert(id.to_string(), scope);
@@ -154,7 +163,7 @@ impl ContextManager {
     }
 
     // Find the Scope<T> of struct T by the given id.
-    pub fn find_scope<T>(&self, id: &str) -> Result<Scope<T>, String>
+    pub fn find_scope<T>(&self, id: &str) -> Result<Scope<T>, ContextManagerError>
     where
         T: Component,
     {
@@ -166,7 +175,7 @@ impl ContextManager {
                 let scope = anyscope.clone().downcast::<T>();
                 Ok(scope.clone())
             }
-            None => return Err(format!("Scope (id == {}) does not exist..", id)),
+            None => return Err(ContextManagerError::ScopeDoesNotExist(id.into())),
         }
     }
 }
@@ -182,6 +191,30 @@ impl PartialEq for ContextManager {
         Rc::ptr_eq(&self.0, &other.0)
     }
 }
+
+pub enum ContextManagerError {
+    ContextUnavailable,
+    ScopeAlreadyExists(String),
+    ScopeDoesNotExist(String),
+}
+
+impl Debug for ContextManagerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+    }
+}
+
+impl Display for ContextManagerError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::ContextUnavailable => write!(f, "No context was found."),
+            Self::ScopeAlreadyExists(id) => write!(f, "Scope: {} already exists.", id),
+            Self::ScopeDoesNotExist(id) => write!(f, "Scope: {} does not exist.", id),
+        }
+    }
+}
+
+impl Error for ContextManagerError {}
 
 #[derive(Clone, Debug)]
 struct State {
