@@ -9,6 +9,7 @@ use yew::{
     html::{AnyScope, Scope},
     prelude::*,
 };
+
 /// ContextManager which serves as a shared reference to the
 /// 'T' provided by ContextProvider<T> component where T == State.
 /// ContextManager must be called inside the function to which
@@ -39,7 +40,7 @@ use yew::{
 ///     let manager = ContextManager::new();
 ///
 ///     html! {
-///         <ContextProvider<ContextManager> context={manager.clone()}>
+///         <ContextProvider<ContextManager> context={manager}>
 ///             <Publisher />
 ///             <Subscriber />
 ///         </ContextProvider<ContextManager>>
@@ -140,7 +141,7 @@ impl ContextManager {
         match ctx.link().context::<Self>(Callback::noop()) {
             Some(context) => {
                 let (manager, _) = context;
-                Ok(manager.clone())
+                Ok(manager)
             }
             None => Err(ContextManagerError::ContextUnavailable),
         }
@@ -173,9 +174,9 @@ impl ContextManager {
             // Anyscope does not implement callback().
             Some(anyscope) => {
                 let scope = anyscope.clone().downcast::<T>();
-                Ok(scope.clone())
+                Ok(scope)
             }
-            None => return Err(ContextManagerError::ScopeDoesNotExist(id.into())),
+            None => Err(ContextManagerError::ScopeDoesNotExist(id.into())),
         }
     }
 }
