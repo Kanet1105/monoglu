@@ -2,7 +2,5 @@
 
 members = [
     "monoglu-auth",
-    "monoglu-storage",
     "monoglu-webapp",
-    "monoglu-worker",
 ]
