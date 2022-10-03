@@ -8,6 +8,7 @@ pub mod prelude {
     pub use crate::{
         components::*,
         context_manager::ContextManager,
+        events::AppEvent,
     };
     pub use gloo::{
         storage::{LocalStorage, Storage},
@@ -30,7 +31,7 @@ enum Route {
 
 fn switch(route: &Route) -> Html {
     match route {
-        Route::Home => html! { <AuthPopUp /> },
+        Route::Home => html! { <GlobalNavBar /> },
         Route::NotFound => html! { <h1>{ "404 : Not Found" }</h1> },
     }
 }
