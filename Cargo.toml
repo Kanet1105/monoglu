@@ -1,7 +1,6 @@
 [workspace]
 
 members = [
-    "monoglu-app",
     "monoglu-auth",
     "monoglu-webapp",
     "yew-template",
