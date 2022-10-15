@@ -1,31 +1,25 @@
-mod features;
-mod pages;
+pub mod features;
+pub mod pages;
 
-pub mod prelude {}
-
-use serde::{Deserialize, Serialize};
-
-#[derive(Deserialize, Serialize)]
-struct WebApp;
+struct WebApp {
+    router: 
+}
 
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        if let Some(storage) = cc.storage {
-            return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
-        }
         Default::default()
     }
 }
 
 impl Default for WebApp {
     fn default() -> Self {
-        Self
+        Self { State::new() }
     }
 }
 
 impl eframe::App for WebApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        let request = ehttp::Request("127.0.0.1:8000/");
+        
     }
 }
 
