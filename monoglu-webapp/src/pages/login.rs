@@ -1,3 +1,4 @@
+#[derive(serde::Deserialize, serde::Serialize)]
 pub struct LoginPage;
 
 impl LoginPage {

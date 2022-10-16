@@ -1,19 +1,11 @@
-pub mod features;
 pub mod pages;
 
-struct WebApp {
-    router: 
-}
+#[derive(serde::Deserialize, serde::Serialize)]
+struct WebApp;
 
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        Default::default()
-    }
-}
-
-impl Default for WebApp {
-    fn default() -> Self {
-        Self { State::new() }
+        Self
     }
 }
 
