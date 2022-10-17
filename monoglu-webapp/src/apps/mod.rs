@@ -1,10 +1,12 @@
 mod chat;
+mod login;
 
 pub trait View {
     fn show(ctx: &egui::Context);
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
+pub struct AppState {}
+
 pub struct WebApp;
 
 impl WebApp {
