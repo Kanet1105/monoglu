@@ -1,19 +1,4 @@
-pub mod pages;
-
-#[derive(serde::Deserialize, serde::Serialize)]
-struct WebApp;
-
-impl WebApp {
-    fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        Self
-    }
-}
-
-impl eframe::App for WebApp {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        
-    }
-}
+mod apps;
 
 #[cfg(target_arch = "wasm32")]
 pub fn run() {
@@ -30,7 +15,7 @@ pub fn run() {
     eframe::start_web(
         "main_canvas", // hardcode it
         web_options,
-        Box::new(|cc| Box::new(WebApp::new(cc))),
+        Box::new(|cc| Box::new(apps::WebApp::new(cc))),
     )
     .expect("failed to start eframe");
 }
