@@ -17,6 +17,10 @@ impl super::Dialog for Ex1 {
         self.visible
     }
 
+    fn set_visible(&mut self, state: bool) {
+        self.visible = state;
+    }
+
     fn show(&mut self, ctx: &egui::Context) {
         egui::CentralPanel::default()
             .show(ctx, |ui| {

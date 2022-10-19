@@ -29,22 +29,27 @@ impl WebApp {
     //         });
     // }
 
-    // fn side_bar(&self, ctx: &egui::Context, ratio: f32) {
-    //     egui::SidePanel::left("side_bar")
-    //         .min_width(ctx.available_rect().width() * ratio)
-    //         .resizable(false)
-    //         .show(ctx, |ui| {
-    //             ui.heading("Apps");
-    //             ui.separator();
+    fn side_bar(&mut self, ctx: &egui::Context, ratio: f32) {
+        egui::SidePanel::left("side_bar")
+            .min_width(ctx.available_rect().width() * ratio)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.heading("Apps");
+                ui.separator();
 
-    //             // Add apps
-    //             let chat_app = ui.label("chat");
-    //         });
-    // }
+                for dialog in &mut self.dialogs.dialog_list {
+                    let button = ui.button(dialog.name());
+                    if button.clicked() {
+                        dialog.set_visible(true);
+                    }
+                }
+            });
+    }
 }
 
 impl eframe::App for WebApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        self.side_bar(ctx, 0.1);
         self.dialogs.update(ctx, frame);
     }
 }

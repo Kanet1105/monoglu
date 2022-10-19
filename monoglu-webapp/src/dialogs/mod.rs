@@ -4,11 +4,12 @@ mod ex2;
 pub trait Dialog {
     fn name(&self) -> &'static str;
     fn is_visible(&self) -> bool;
+    fn set_visible(&mut self, state: bool);
     fn show(&mut self, ctx: &egui::Context);
 }
 
 pub struct DialogStates {
-    dialog_list: Vec<Box<dyn Dialog>>,
+    pub dialog_list: Vec<Box<dyn Dialog>>,
 }
 
 impl DialogStates {
