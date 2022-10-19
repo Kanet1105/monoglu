@@ -1,7 +1,10 @@
+mod ex1;
+mod ex2;
+
 pub trait Dialog {
     fn name(&self) -> &'static str;
     fn is_visible(&self) -> bool;
-    fn show(&self, ctx: &egui::Context);
+    fn show(&mut self, ctx: &egui::Context);
 }
 
 pub struct DialogStates {
@@ -14,7 +17,7 @@ impl DialogStates {
     }
 
     pub fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        for dialog in &self.dialog_list {
+        for dialog in &mut self.dialog_list {
             if dialog.is_visible() {
                 dialog.show(ctx);
             }
@@ -25,7 +28,10 @@ impl DialogStates {
 impl Default for DialogStates {
     fn default() -> Self {
         Self {
-            dialog_list: vec![],
+            dialog_list: vec![
+                Box::new(ex1::Ex1::new()),
+                Box::new(ex2::Ex2::new()),
+            ],
         }
     }
 }
