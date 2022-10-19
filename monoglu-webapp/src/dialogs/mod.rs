@@ -1,4 +1,4 @@
-mod ex1;
+mod chat;
 mod ex2;
 
 pub trait Dialog {
@@ -30,7 +30,7 @@ impl Default for DialogStates {
     fn default() -> Self {
         Self {
             dialog_list: vec![
-                Box::new(ex1::Ex1::new()),
+                Box::new(chat::Chat::new()),
                 Box::new(ex2::Ex2::new()),
             ],
         }
