@@ -1,3 +1,8 @@
+mod login;
+mod user;
+
 pub trait Tab {
-    fn view(&self, ctx: &egui::Context);
+    fn view(&mut self, ctx: &egui::Context);
 }
+
+pub struct TabStates {}
