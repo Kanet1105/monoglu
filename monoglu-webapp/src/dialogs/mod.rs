@@ -9,7 +9,7 @@ pub trait Dialog {
 }
 
 pub struct DialogStates {
-    pub dialog_list: Vec<Box<dyn Dialog>>,
+    pub dialogs: Vec<Box<dyn Dialog>>,
 }
 
 impl DialogStates {
@@ -18,7 +18,7 @@ impl DialogStates {
     }
 
     pub fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        for dialog in &mut self.dialog_list {
+        for dialog in &mut self.dialogs {
             if dialog.is_visible() {
                 dialog.show(ctx);
             }
@@ -29,7 +29,7 @@ impl DialogStates {
 impl Default for DialogStates {
     fn default() -> Self {
         Self {
-            dialog_list: vec![
+            dialogs: vec![
                 Box::new(chat::Chat::new()),
                 Box::new(ex2::Ex2::new()),
             ],
