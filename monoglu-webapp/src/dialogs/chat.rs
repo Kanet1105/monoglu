@@ -21,13 +21,14 @@ impl super::Dialog for Chat {
         self.visible
     }
 
-    fn set_visible(&mut self, state: bool) {
-        self.visible = state;
+    fn toggle_visible(&mut self) {
+        self.visible = !self.visible;
     }
 
     fn show(&mut self, ctx: &egui::Context) {
         egui::Window::new(self.name())
             .open(&mut self.visible)
+            .default_width(200.0)
             .resizable(true)
             .show(ctx, |ui| {
                 egui::ScrollArea::vertical()

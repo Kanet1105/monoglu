@@ -1,10 +1,10 @@
 mod chat;
-mod ex2;
+mod graph1;
 
 pub trait Dialog {
     fn name(&self) -> &'static str;
     fn is_visible(&self) -> bool;
-    fn set_visible(&mut self, state: bool);
+    fn toggle_visible(&mut self);
     fn show(&mut self, ctx: &egui::Context);
 }
 
@@ -18,11 +18,24 @@ impl DialogStates {
     }
 
     pub fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        for dialog in &mut self.dialogs {
-            if dialog.is_visible() {
-                dialog.show(ctx);
-            }
-        }
+        egui::SidePanel::left("side_bar")
+            .min_width(ctx.available_rect().width() * 0.1)
+            .resizable(false)
+            .show(ctx, |ui| {
+                ui.heading("Apps");
+                ui.separator();
+
+                for dialog in &mut self.dialogs {
+                    let button = ui.button(dialog.name());
+                    if button.clicked() {
+                        dialog.toggle_visible();
+                    }
+                    if dialog.is_visible() {
+                        dialog.show(ctx);
+                    }
+                }        
+            });
+        
     }
 }
 
@@ -31,7 +44,7 @@ impl Default for DialogStates {
         Self {
             dialogs: vec![
                 Box::new(chat::Chat::new()),
-                Box::new(ex2::Ex2::new()),
+                Box::new(graph1::Graph1::new()),
             ],
         }
     }
