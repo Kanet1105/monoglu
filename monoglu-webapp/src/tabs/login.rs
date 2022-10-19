@@ -1,14 +1,14 @@
-pub struct User;
+pub struct Login;
 
-impl User {
+impl Login {
     pub fn new() -> Self {
         Self
     }
 }
 
-impl super::Tab for User {
+impl super::Tab for Login {
     fn name(&self) -> &'static str {
-        "User"
+        "Login"
     }
 
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
