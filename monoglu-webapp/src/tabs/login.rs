@@ -12,22 +12,87 @@ impl Login {
     }
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
-        ui.vertical(|ui| {
-            ui.heading("Sign In");
-            ui.separator();
+        let width = ui.ctx().available_rect().width();
+        let height = ui.ctx().available_rect().height();
 
-            ui.horizontal(|ui| {
-                ui.label("ID : ");
-                ui.text_edit_singleline(&mut self.id);
-            });
-            ui.separator();
+        egui::Frame::none()
+            .stroke(egui::Stroke {
+                width: 2.0,
+                color: egui::Color32::GRAY,
+            })
+            .rounding(egui::Rounding::same(10.0))
+            .outer_margin(egui::style::Margin::symmetric(
+                width * 0.3,
+                height * 0.15,
+            ))
+            .inner_margin(egui::style::Margin::symmetric(
+                width * 0.02,
+                height * 0.02,
+            ))
+            .show(ui, |ui| {
+                ui.vertical_centered(|ui| {
+                    ui.heading("Sign In");
+                    ui.add_space(height * 0.05);
 
-            ui.horizontal(|ui| {
-                ui.label("Password : ");
-                ui.text_edit_singleline(&mut self.password);
+                    egui::Grid::new("login_grid")
+                        .num_columns(2)
+                        .spacing(egui::vec2(width * 0.02, height * 0.04))
+                        .show(ui, |ui| {
+                            ui.label("ID : ");
+                            ui.text_edit_singleline(&mut self.id);
+                            ui.end_row();
+
+                            ui.label("Password : ");
+                            ui.text_edit_singleline(&mut self.password);
+                            ui.end_row();
+                        });
+                    ui.add_space(height * 0.05);
+                    
+                    ui.vertical_centered(|ui| {
+                        egui::Grid::new("button_grid")
+                            .num_columns(2)
+                            .show(ui, |ui| {
+                                ui.vertical_centered(|ui| {
+                                    ui.button("Ok");
+                                });
+                                ui.vertical_centered(|ui| {
+                                    ui.button("Cancel");
+                                });
+                            })
+                    });
+                });
             });
-            ui.separator();
-        });
+        // ui.vertical_centered(|ui| {
+        //     ui.heading("SIGN IN");
+        //     ui.add_space(h_space);
+        // });
+
+        // ui.horizontal_centered(|ui| {
+        //     ui.button("Continue");
+        //     ui.button("Clear");
+        // });
+
+        // ui.group(|ui| {
+        //     egui::Frame::none()
+        //         .show(ui, |ui| {
+        //             ui.vertical_centered(|ui| {
+        //                 ui.heading("Sign In");
+        //             });
+        //             ui.
+        //             egui::Grid::new("login_grid")
+        //                 .num_columns(2)
+        //                 .spacing(egui::vec2(width * 0.02, height * 0.04))
+        //                 .show(ui, |ui| {
+        //                     ui.label("ID : ");
+        //                     ui.text_edit_singleline(&mut self.id);
+        //                     ui.end_row();
+
+        //                     ui.label("Password : ");
+        //                     ui.text_edit_singleline(&mut self.password);
+        //                     ui.end_row();
+        //                 });
+        //         });
+        // });
     }
 }
 
