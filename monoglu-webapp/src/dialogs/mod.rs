@@ -13,10 +13,6 @@ pub struct DialogStates {
 }
 
 impl DialogStates {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::SidePanel::left("side_bar")
             .min_width(ctx.available_rect().width() * 0.1)
@@ -33,9 +29,8 @@ impl DialogStates {
                     if dialog.is_visible() {
                         dialog.show(ctx);
                     }
-                }        
+                }
             });
-        
     }
 }
 
