@@ -1,6 +1,8 @@
+mod exception;
 mod login;
 mod user;
 
+use exception::Exception;
 use std::collections::HashMap;
 
 pub trait Tab {
@@ -10,37 +12,37 @@ pub trait Tab {
 
 pub struct TabStates {
     tabs: HashMap<String, Box<dyn Tab>>,
-    previous_tab: &'static str,
-    current_tab: &'static str,
+    current_tab: String,
 }
 
 impl TabStates {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn switch(&mut self, frame: &mut eframe::Frame) {
+        self.current_tab = frame
+            .info()
+            .web_info
+            .location
+            .hash
+            .to_owned();
     }
 
-    pub fn is_switched(&self) -> bool {
-        if self.current_tab == self.previous_tab {
-            true
-        } else {
-            false
+    pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        self.switch(frame);
+        match self.tabs.get_mut(&self.current_tab) {
+            Some(tab) => tab.view(ctx, frame),
+            None => Exception::PageNotFound.view(ctx, frame),
         }
-    }
-
-    pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) -> bool {
-        self.is_switched()
     }
 }
 
 impl Default for TabStates {
     fn default() -> Self {
+        let mut tabs = HashMap::<String, Box<dyn Tab>>::new();
+        tabs.insert("#login".to_string(), Box::new(login::Login::new()));
+        tabs.insert("#user".to_string(), Box::new(user::User::new()));
+
         Self {
-            tabs: HashMap::from([
-                ("/#login".to_string(), Box::new(login::Login::new())),
-                ("/#user".to_string(), Box::new(user::User::new())),
-            ]),
-            previous_tab: "/",
-            current_tab: "/",
+            tabs,
+            current_tab: "/".to_string(),
         }
     }
 }

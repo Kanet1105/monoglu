@@ -12,6 +12,8 @@ impl super::Tab for User {
     }
 
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.label(self.name());
+        });
     }
 }
