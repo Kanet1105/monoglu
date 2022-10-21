@@ -41,6 +41,21 @@ impl DialogStates {
                         dialog.show(ctx);
                     }
                 }
+
+                ui.add(
+                    SideButton::new("안녕하세요")
+                        .custom_size(egui::vec2(ui.available_width(), 30.0))
+                        .vertical_centered_text(true)
+                        .remove_stroke()                
+                );
+                ui.add(
+                    SideButton::new("모노글루입니다.")
+                        .custom_size(egui::vec2(ui.available_width(), 30.0))
+                        .vertical_centered_text(true)
+                        .fill(egui::Color32::LIGHT_BLUE)
+                        .stroke(2.0, egui::Color32::BLACK)                        
+                );
+
             });
     }
 }
@@ -69,6 +84,7 @@ pub struct SideButton {
     image: Option<egui::widgets::Image>,
     custom_size: Option<egui::Vec2>,
     left_offset: f32,
+    vertical_centered_text: bool,
 }
 
 impl SideButton {
@@ -85,6 +101,7 @@ impl SideButton {
             image: None,
             custom_size: None,
             left_offset: 0.0,
+            vertical_centered_text: false,
         }
     }
 
@@ -100,6 +117,12 @@ impl SideButton {
         self
     }
 
+    pub fn remove_stroke(mut self) -> Self {
+        self.stroke = None;
+        self.frame = Some(true);
+        self
+    } 
+
     pub fn custom_size(mut self, size: egui::Vec2) -> Self {
         self.custom_size = Some(size);
         self
@@ -107,6 +130,11 @@ impl SideButton {
 
     pub fn left_offset(mut self, left_offset: f32) -> Self {
         self.left_offset = left_offset;
+        self
+    }
+
+    pub fn vertical_centered_text(mut self, vertical_centered_text: bool) -> Self {
+        self.vertical_centered_text = vertical_centered_text;
         self
     }
 
@@ -126,6 +154,7 @@ impl egui::Widget for SideButton {
             image,
             custom_size,
             left_offset,
+            vertical_centered_text,
         } = self;
 
         let frame = frame.unwrap_or_else(|| ui.visuals().button_frame);
@@ -136,13 +165,17 @@ impl egui::Widget for SideButton {
 
         let wrap_width = ui.available_width() - total_extra.x;
         let text = text.into_galley(ui, wrap, wrap_width, egui::TextStyle::Button);
-        
+
         let mut desired_size: egui::Vec2;
         match custom_size {
             Some(custom_size) => desired_size = custom_size,
             None => desired_size = text.size() + 2.0 * button_padding,
         }
         desired_size = desired_size.at_least(min_size);
+
+        if vertical_centered_text {
+            button_padding = (desired_size - text.size()) / 2.0;
+        }
 
         let (rect, response) = ui.allocate_at_least(desired_size, sense);
         response.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, text.text()));
