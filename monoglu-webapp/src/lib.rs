@@ -1,4 +1,3 @@
-mod components;
 mod dialogs;
 mod tabs;
 
@@ -7,16 +6,16 @@ use tabs::TabStates;
 
 struct WebApp {
     is_logged_in: bool,
-    dialog_states: DialogStates,
     tab_states: TabStates,
+    dialog_states: DialogStates,
 }
 
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         Self {
             is_logged_in: false,
-            dialog_states: DialogStates::default(),
             tab_states: TabStates::default(),
+            dialog_states: DialogStates::default(),
         }
     }
 
@@ -48,7 +47,9 @@ impl WebApp {
 
 impl eframe::App for WebApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        self.dialog_states.update(ctx, frame);
+        if !self.is_logged_in {
+            ctx.output().open_url("/#login");
+        }
         self.tab_states.update(ctx, frame);
     }
 }

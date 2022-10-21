@@ -1,6 +1,7 @@
 pub struct Login {
     id: String,
     password: String,
+    url: String,
 }
 
 impl Login {
@@ -8,7 +9,11 @@ impl Login {
         Self {
             id: String::new(),
             password: String::new(),
+            url: "127.0.0.1:8000/login".to_string(),
         }
+    }
+    
+    pub fn login(&mut self) {
     }
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
@@ -42,12 +47,19 @@ impl Login {
                         .num_columns(2)
                         .spacing(egui::vec2(width * 0.02, height * 0.04))
                         .show(ui, |ui| {
-                            ui.label("ID : ");
-                            ui.text_edit_singleline(&mut self.id);
+                            ui.add(egui::Label::new("ID : "));
+                            ui.add(egui::TextEdit::singleline(&mut self.id)
+                                .desired_width(f32::INFINITY)
+                            );
+                            // ui.text_edit_singleline(&mut self.id);
                             ui.end_row();
 
-                            ui.label("Password : ");
-                            ui.text_edit_singleline(&mut self.password);
+                            ui.add(egui::Label::new("Password : "));
+                            ui.add(egui::TextEdit::singleline(&mut self.password)
+                                .desired_width(f32::INFINITY)
+                                .password(true)
+                            );
+                            // ui.text_edit_singleline(&mut self.password);
                             ui.end_row();
                         });
 
@@ -61,7 +73,7 @@ impl Login {
                             self.password.clear();
                         };
                         if ui.button("Ok").clicked() {
-                            
+                            self.login();
                         };
                     });
                 });
