@@ -30,10 +30,14 @@ impl Login {
                 height * 0.02,
             ))
             .show(ui, |ui| {
-                ui.vertical_centered(|ui| {
+                let input_layout = egui::Layout::top_down(egui::Align::Center);
+                ui.allocate_ui_with_layout(ui.available_size(), input_layout, |ui| {
                     ui.heading("Sign In");
-                    ui.add_space(height * 0.05);
-
+                    
+                    ui.add_space(height * 0.02);
+                    ui.separator();
+                    ui.add_space(height * 0.02);
+                    
                     egui::Grid::new("login_grid")
                         .num_columns(2)
                         .spacing(egui::vec2(width * 0.02, height * 0.04))
@@ -46,53 +50,17 @@ impl Login {
                             ui.text_edit_singleline(&mut self.password);
                             ui.end_row();
                         });
-                    ui.add_space(height * 0.05);
-                    
-                    ui.vertical_centered(|ui| {
-                        egui::Grid::new("button_grid")
-                            .num_columns(2)
-                            .show(ui, |ui| {
-                                ui.vertical_centered(|ui| {
-                                    ui.button("Ok");
-                                });
-                                ui.vertical_centered(|ui| {
-                                    ui.button("Cancel");
-                                });
-                            })
+
+                    ui.add_space(height * 0.02);
+                    ui.separator();
+                    ui.add_space(height * 0.02);
+
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
+                        ui.button("Cancel");
+                        ui.button("Ok");
                     });
                 });
             });
-        // ui.vertical_centered(|ui| {
-        //     ui.heading("SIGN IN");
-        //     ui.add_space(h_space);
-        // });
-
-        // ui.horizontal_centered(|ui| {
-        //     ui.button("Continue");
-        //     ui.button("Clear");
-        // });
-
-        // ui.group(|ui| {
-        //     egui::Frame::none()
-        //         .show(ui, |ui| {
-        //             ui.vertical_centered(|ui| {
-        //                 ui.heading("Sign In");
-        //             });
-        //             ui.
-        //             egui::Grid::new("login_grid")
-        //                 .num_columns(2)
-        //                 .spacing(egui::vec2(width * 0.02, height * 0.04))
-        //                 .show(ui, |ui| {
-        //                     ui.label("ID : ");
-        //                     ui.text_edit_singleline(&mut self.id);
-        //                     ui.end_row();
-
-        //                     ui.label("Password : ");
-        //                     ui.text_edit_singleline(&mut self.password);
-        //                     ui.end_row();
-        //                 });
-        //         });
-        // });
     }
 }
 
