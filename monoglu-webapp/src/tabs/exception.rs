@@ -1,6 +1,7 @@
 pub enum Exception {
     PageNotFound,
     InternalError,
+    RequestTimeOut,
 }
 
 impl super::Tab for Exception {
@@ -12,11 +13,14 @@ impl super::Tab for Exception {
         egui::CentralPanel::default().show(ctx, |ui| {
             match self {
                 Self::PageNotFound => {
-                    ui.label("[404] Page Not Found.");
+                    ui.heading("[404] Page Not Found.");
                 },
                 Self::InternalError => {
-                    ui.label("[500] Internal Error.");
+                    ui.heading("[500] Internal Error.");
                 },
+                Self::RequestTimeOut => {
+                    ui.heading("Request Timeout.");
+                }
             }
         });
     }
