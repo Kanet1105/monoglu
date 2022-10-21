@@ -56,8 +56,13 @@ impl Login {
                     ui.add_space(height * 0.02);
 
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
-                        ui.button("Cancel");
-                        ui.button("Ok");
+                        if ui.button("Cancel").clicked() {
+                            self.id.clear();
+                            self.password.clear();
+                        };
+                        if ui.button("Ok").clicked() {
+                            
+                        };
                     });
                 });
             });
