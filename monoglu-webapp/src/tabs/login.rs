@@ -1,7 +1,21 @@
+use std::sync::{Arc, Mutex};
+
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct UserInfo {
+    pub id: String,
+    pub password: String,
+}
+
+impl UserInfo {
+    pub fn new(id: String, password: String) -> Self {
+        Self { id, password }
+    }
+}
+
 pub struct Login {
     id: String,
     password: String,
-    url: String,
+    token: Arc<Mutex<String>>,
 }
 
 impl Login {
@@ -9,11 +23,37 @@ impl Login {
         Self {
             id: String::new(),
             password: String::new(),
-            url: "127.0.0.1:8000/login".to_string(),
+            token: Mutex::new(String::new()).into(),
         }
     }
     
     pub fn login(&mut self) {
+        let body = UserInfo {
+            id: self.id.to_string(),
+            password: self.password.to_string(),
+        };
+        let request = ehttp::Request::post(
+            "127.0.0.1:8000/login".to_string(),
+            serde_json::to_vec(&body).unwrap(),
+        );
+        let token = self.token.clone();
+        ehttp::fetch(request, move |response| {
+            match response {
+                Ok(response) => {
+                    *token.lock().unwrap() = response
+                        .text()
+                        .unwrap()
+                        .to_string();
+                    // log::info!("{:?}", &self.token);
+                },
+                Err(e) => log::info!("{:?}", e),
+            }
+        });
+    }
+
+    pub fn flush_user_info(&mut self) {
+        self.id.clear();
+        self.password.clear();
     }
 
     pub fn ui(&mut self, ui: &mut egui::Ui) {
@@ -69,11 +109,11 @@ impl Login {
 
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::TOP), |ui| {
                         if ui.button("Cancel").clicked() {
-                            self.id.clear();
-                            self.password.clear();
+                            self.flush_user_info();
                         };
                         if ui.button("Ok").clicked() {
                             self.login();
+                            self.flush_user_info();
                         };
                     });
                 });
