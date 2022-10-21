@@ -16,17 +16,23 @@ pub struct DialogStates {
 
 impl DialogStates {
     pub fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        let min_width = ctx.available_rect().width() * 0.1;
+
         egui::SidePanel::left("side_bar")
-            .min_width(ctx.available_rect().width() * 0.1)
+            .min_width(min_width)
             .resizable(false)
             .show(ctx, |ui| {
                 ui.heading("Apps");
                 ui.separator();
 
                 for dialog in &mut self.dialogs {
+        
                     let button = ui.add(
                         SideButton::new(dialog.name())
-                    
+                            .custom_size(egui::vec2(ui.available_width(), 50.0))
+                            .left_offset(10.0)
+                            .fill(egui::Color32::YELLOW)
+                            .stroke(1.0, egui::Color32::GREEN)
                     );
                     if button.clicked() {
                         dialog.toggle_visible();
@@ -50,7 +56,7 @@ impl Default for DialogStates {
     }
 }
 
-
+/// Custom widget button for side bar.
 pub struct SideButton {
     text: egui::WidgetText,
     wrap: Option<bool>,
@@ -61,6 +67,8 @@ pub struct SideButton {
     frame: Option<bool>,
     min_size: egui::Vec2,
     image: Option<egui::widgets::Image>,
+    custom_size: Option<egui::Vec2>,
+    left_offset: f32,
 }
 
 impl SideButton {
@@ -69,14 +77,39 @@ impl SideButton {
             text: text.into(),
             wrap: None,
             fill: Some(egui::Color32::WHITE),
-            stroke: Some(egui::Stroke { width: 1.0, color: egui::Color32::BLUE }),
+            stroke: Some(egui::Stroke { width: 1.0, color: egui::Color32::GRAY }),
             sense: egui::Sense::click(),
             small: false,
-            frame: None,
+            frame: Some(true),
             min_size: egui::Vec2::ZERO,
             image: None,
+            custom_size: None,
+            left_offset: 0.0,
         }
     }
+
+    pub fn fill(mut self, fill: impl Into<egui::Color32>) -> Self {
+        self.fill = Some(fill.into());
+        self.frame = Some(true);
+        self
+    }
+
+    pub fn stroke(mut self, width: f32, color: egui::Color32) -> Self {
+        self.stroke = Some(egui::Stroke { width: width, color: color });
+        self.frame = Some(true);
+        self
+    }
+
+    pub fn custom_size(mut self, size: egui::Vec2) -> Self {
+        self.custom_size = Some(size);
+        self
+    }
+
+    pub fn left_offset(mut self, left_offset: f32) -> Self {
+        self.left_offset = left_offset;
+        self
+    }
+
 }
 
 impl egui::Widget for SideButton {
@@ -91,18 +124,24 @@ impl egui::Widget for SideButton {
             frame,
             min_size,
             image,
+            custom_size,
+            left_offset,
         } = self;
 
         let frame = frame.unwrap_or_else(|| ui.visuals().button_frame);
 
-        let mut button_padding = ui.spacing().button_padding + egui::vec2(30.0, 30.0);
+        let mut button_padding = ui.spacing().button_padding + egui::vec2(left_offset, 0.0);
         
         let total_extra = button_padding + button_padding;
 
         let wrap_width = ui.available_width() - total_extra.x;
         let text = text.into_galley(ui, wrap, wrap_width, egui::TextStyle::Button);
-
-        let mut desired_size = text.size() + 2.0 * button_padding;
+        
+        let mut desired_size: egui::Vec2;
+        match custom_size {
+            Some(custom_size) => desired_size = custom_size,
+            None => desired_size = text.size() + 2.0 * button_padding,
+        }
         desired_size = desired_size.at_least(min_size);
 
         let (rect, response) = ui.allocate_at_least(desired_size, sense);
@@ -134,14 +173,6 @@ impl egui::Widget for SideButton {
             }
 
             text.paint_with_visuals(ui.painter(), text_pos, visuals);
-        }
-
-        if let Some(image) = image {
-            let image_rect = egui::Rect::from_min_size(
-                egui::pos2(rect.min.x, rect.center().y -0.5 - (image.size().y / 2.0)),
-                image.size(),
-            );
-            image.paint_at(ui, image_rect);
         }
 
         response
