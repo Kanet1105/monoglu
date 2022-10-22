@@ -2,7 +2,6 @@
 
 members = [
     "monoglu-auth",
-    "monoglu-testserver",
     "monoglu-webapp",
     "yew-template",
 ]
