@@ -61,41 +61,6 @@ fn setup_fonts(ctx: &egui::Context) {
     );
 
     fonts.font_data.insert(
-        "Roboto-Italic".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-Italic.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
-        "Roboto-Thin".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-Thin.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
-        "Roboto-ThinItalic".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-ThinItalic.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
-        "Roboto-Bold".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-Bold.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
-        "Roboto-BoldItalic".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-BoldItalic.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
         "NotoSansKR-Regular".to_owned(),
         egui::FontData::from_static(include_bytes!(
             "..\\assets\\fonts\\NotoSansKR-Regular.otf"
@@ -108,11 +73,6 @@ fn setup_fonts(ctx: &egui::Context) {
             egui::FontFamily::Proportional,
             vec![
                 "Roboto-Regular".to_owned(),
-                "Roboto-Italic".to_owned(),
-                "Roboto-Thin".to_owned(),
-                "Roboto-ThinItalic".to_owned(),
-                "Roboto-Bold".to_owned(),
-                "Roboto-BoldItalic".to_owned(),
                 "NotoSansKR-Regular".to_owned(),
             ],
         );
@@ -123,11 +83,6 @@ fn setup_fonts(ctx: &egui::Context) {
             egui::FontFamily::Monospace,
             vec![
                 "Roboto-Regular".to_owned(),
-                "Roboto-Italic".to_owned(),
-                "Roboto-Thin".to_owned(),
-                "Roboto-ThinItalic".to_owned(),
-                "Roboto-Bold".to_owned(),
-                "Roboto-BoldItalic".to_owned(),
                 "NotoSansKR-Regular".to_owned(),
             ], 
         );

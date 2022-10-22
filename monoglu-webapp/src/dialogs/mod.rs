@@ -49,7 +49,21 @@ impl DialogStates {
                         .remove_stroke()                
                 );
                 ui.add(
-                    SideButton::new("모노글루입니다.")
+                    SideButton::new(egui::RichText::new("모노글루입니다.").color(egui::Color32::RED).italics())
+                        .custom_size(egui::vec2(ui.available_width(), 30.0))
+                        .vertical_centered_text(true)
+                        .fill(egui::Color32::LIGHT_BLUE)
+                        .stroke(2.0, egui::Color32::BLACK)                        
+                );
+                ui.add(
+                    SideButton::new(egui::RichText::new("모노글루입니다.").text_style(egui::TextStyle::Heading).strong())
+                        .custom_size(egui::vec2(ui.available_width(), 30.0))
+                        .vertical_centered_text(true)
+                        .fill(egui::Color32::LIGHT_BLUE)
+                        .stroke(2.0, egui::Color32::BLACK)                        
+                );
+                ui.add(
+                    SideButton::new(egui::RichText::new("모노글루입니다.").text_style(egui::TextStyle::Small).weak())
                         .custom_size(egui::vec2(ui.available_width(), 30.0))
                         .vertical_centered_text(true)
                         .fill(egui::Color32::LIGHT_BLUE)
