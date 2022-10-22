@@ -1,3 +1,4 @@
+// mod components;
 mod dialogs;
 mod tabs;
 
@@ -6,50 +7,24 @@ use tabs::TabStates;
 
 struct WebApp {
     is_logged_in: bool,
-    tab_states: TabStates,
     dialog_states: DialogStates,
+    tab_states: TabStates,
 }
 
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        setup_fonts(&cc.egui_ctx);
         Self {
             is_logged_in: false,
-            tab_states: TabStates::default(),
             dialog_states: DialogStates::default(),
+            tab_states: TabStates::default(),
         }
     }
-
-    // fn navigation_bar(&self, ctx: &egui::Context, ratio: f32) {
-    //     let frame = egui::Frame::none()
-    //         .inner_margin(Margin { left: 15.0, right: 15.0, top: 15.0, bottom: 15.0 })
-    //         .fill(Color32::GRAY);
-    //     egui::TopBottomPanel::top("navigation_bar")
-    //         .frame(frame)
-    //         .min_height(ctx.available_rect().height() * ratio)
-    //         .resizable(false)
-    //         .show(ctx, |ui| {
-    //             ui.horizontal(|ui| {
-    //                 ui.heading("Monoglu");
-    //             });
-    //         });
-    // }
-
-    // fn side_bar(&mut self, ctx: &egui::Context, ratio: f32) {
-    //     egui::SidePanel::left("side_bar")
-    //         .min_width(ctx.available_rect().width() * ratio)
-    //         .resizable(false)
-    //         .show(ctx, |ui| {
-    //             ui.heading("Apps");
-    //             ui.separator();           
-    //         });
-    // }
 }
 
 impl eframe::App for WebApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        if !self.is_logged_in {
-            ctx.output().open_url("/#login");
-        }
+        self.dialog_states.update(ctx, frame);
         self.tab_states.update(ctx, frame);
     }
 }
@@ -72,4 +47,90 @@ pub fn run() {
         Box::new(|cc| Box::new(WebApp::new(cc))),
     )
     .expect("failed to start eframe");
+}
+
+
+fn setup_fonts(ctx: &egui::Context) {
+    let mut fonts = egui::FontDefinitions::empty();
+
+    fonts.font_data.insert(
+        "Roboto-Regular".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-Regular.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "Roboto-Italic".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-Italic.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "Roboto-Thin".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-Thin.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "Roboto-ThinItalic".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-ThinItalic.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "Roboto-Bold".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-Bold.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "Roboto-BoldItalic".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\Roboto-BoldItalic.ttf"
+        )),
+    );
+
+    fonts.font_data.insert(
+        "NotoSansKR-Regular".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\NotoSansKR-Regular.otf"
+        )),
+    );
+
+    fonts
+        .families
+        .insert(
+            egui::FontFamily::Proportional,
+            vec![
+                "Roboto-Regular".to_owned(),
+                "Roboto-Italic".to_owned(),
+                "Roboto-Thin".to_owned(),
+                "Roboto-ThinItalic".to_owned(),
+                "Roboto-Bold".to_owned(),
+                "Roboto-BoldItalic".to_owned(),
+                "NotoSansKR-Regular".to_owned(),
+            ],
+        );
+
+    fonts
+        .families
+        .insert(
+            egui::FontFamily::Monospace,
+            vec![
+                "Roboto-Regular".to_owned(),
+                "Roboto-Italic".to_owned(),
+                "Roboto-Thin".to_owned(),
+                "Roboto-ThinItalic".to_owned(),
+                "Roboto-Bold".to_owned(),
+                "Roboto-BoldItalic".to_owned(),
+                "NotoSansKR-Regular".to_owned(),
+            ], 
+        );
+
+    ctx.set_fonts(fonts);
 }
