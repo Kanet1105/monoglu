@@ -33,7 +33,7 @@ impl Login {
             password: self.password.to_string(),
         };
         let request = ehttp::Request::post(
-            "127.0.0.1:8000/login".to_string(),
+            "/auth".to_string(),
             serde_json::to_vec(&body).unwrap(),
         );
         let token = self.token.clone();
