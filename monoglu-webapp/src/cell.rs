@@ -1,18 +1,21 @@
-use std::collections::BTreeMap;
+use std::{
+    collections::BTreeMap, hash::Hash,
+};
 
-pub struct CellLayout {
+pub struct Cell {
     row: usize,
     col: usize,
-    cell: BTreeMap<(usize, usize), egui::Frame>,
+    cell: BTreeMap<(usize, usize), egui::Area>,
 }
 
-impl CellLayout {
-    pub fn new(row: usize, col: usize) -> Self {
-        let mut cell = BTreeMap::<(usize, usize), egui::Frame>::new();
+impl Cell {
+    pub fn new(id: &str, row: usize, col: usize) -> Self {
+        let mut cell = BTreeMap::<(usize, usize), egui::Area>::new();
         for y in 0..row {
             for x in 0..col {
-                let frame = egui::Frame::none();
-                cell.insert((y, x), frame);
+                let area = egui::Area::new(format!("{}_{}_{}", id, row, col))
+                    .movable(false);
+                cell.insert((y, x), area);
             }
         }
 
@@ -23,23 +26,16 @@ impl CellLayout {
         }
     }
 
-    pub fn get_frame<'a>(&'a mut self, row: usize, col: usize) -> &'a mut egui::Frame {
+    pub fn get_area<'a>(&'a mut self, row: usize, col: usize) -> &'a mut egui::Area {
         self.cell.get_mut(&(row, col)).unwrap()
     }
 
-    /// Lay inner frames out on the grid.
+    /// Lay inner areas out on the grid.
     pub fn show(&mut self, ui: &mut egui::Ui) {
         ui.vertical(|ui| {
             for y in 0..self.row {
                 ui.horizontal(|ui| {
-                    for x in 0..self.col {
-                        let frame = self.cell
-                            .get(&(y, x))
-                            .unwrap()
-                            .show(ui, |ui| {
-                                ui.label(format!("{}, {}", y, x));
-                            });
-                    }
+                    for x in 0..self.col {}
                 });
             } 
         });
