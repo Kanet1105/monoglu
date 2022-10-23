@@ -22,4 +22,26 @@ impl CellLayout {
             cell,
         }
     }
+
+    pub fn get_frame<'a>(&'a mut self, row: usize, col: usize) -> &'a mut egui::Frame {
+        self.cell.get_mut(&(row, col)).unwrap()
+    }
+
+    /// Lay inner frames out on the grid.
+    pub fn show(&mut self, ui: &mut egui::Ui) {
+        ui.vertical(|ui| {
+            for y in 0..self.row {
+                ui.horizontal(|ui| {
+                    for x in 0..self.col {
+                        let frame = self.cell
+                            .get(&(y, x))
+                            .unwrap()
+                            .show(ui, |ui| {
+                                ui.label(format!("{}, {}", y, x));
+                            });
+                    }
+                });
+            } 
+        });
+    }
 }
