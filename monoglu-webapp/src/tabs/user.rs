@@ -6,7 +6,7 @@ pub struct User {
 
 impl User {
     pub fn new() -> Self {
-        Self { grid: Grid::new("user_tab_grid", 2, 2) }
+        Self { grid: Grid::new("user_tab_grid", 3, 3) }
     }
 }
 

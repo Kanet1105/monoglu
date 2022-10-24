@@ -20,15 +20,15 @@ impl Cell {
         }
     }
 
-    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, height: f32, width: f32) {
+    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, width: f32, height: f32) {
         self.area
             .default_pos(*offset)
             .movable(true)
             .show(ctx, |ui| {
                 self.frame.show(ui, |ui| {
                     self.resize
-                        .default_height(height)
                         .default_width(width)
+                        .default_height(height)
                         .show(ui, |ui| {
                             ui.label(&self.id);
                         });
@@ -53,7 +53,6 @@ impl Grid {
         for y in 0..row {
             for x in 0..col {
                 let cell_id = format!("{}_inner_{}_{}", id, y, x);
-                log::info!("{}", &cell_id);
                 grid.insert((y, x), Cell::new(&cell_id));
             }
         }
@@ -76,17 +75,17 @@ impl Grid {
     }
 
     pub fn show(&mut self, ctx: &egui::Context) {
-        let cell_height = ctx.available_rect().height() / self.row as f32;
         let cell_width = ctx.available_rect().width() / self.col as f32;
+        let cell_height = ctx.available_rect().height() / self.row as f32;
 
         for y in 0..self.row {
             for x in 0..self.col {
                 let cell_offset = egui::pos2(
-                    ctx.available_rect().min.y + (cell_height * y as f32),
                     ctx.available_rect().min.x + (cell_width * x as f32),
+                    ctx.available_rect().min.y + (cell_height * y as f32),
                 );
-                let cell = self.get_cell(y, x);
-                cell.show(ctx, &cell_offset, cell_height, cell_width);
+                log::info!("{:?}", &cell_offset);
+                self.get_cell(y, x).show(ctx, &cell_offset, cell_width, cell_height);
             }
         }
     }
