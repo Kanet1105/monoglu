@@ -1,4 +1,4 @@
-// mod components;
+mod cell;
 mod dialogs;
 mod tabs;
 
