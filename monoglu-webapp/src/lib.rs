@@ -14,6 +14,7 @@ struct WebApp {
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         setup_fonts(&cc.egui_ctx);
+        configure_text_styles(&cc.egui_ctx);
         Self {
             is_logged_in: false,
             dialog_states: DialogStates::default(),
