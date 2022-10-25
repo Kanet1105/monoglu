@@ -1,5 +1,7 @@
 mod cell;
+mod data;
 mod dialogs;
+mod monoglu_features;
 mod tabs;
 
 use dialogs::DialogStates;
@@ -13,8 +15,8 @@ struct WebApp {
 
 impl WebApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        setup_fonts(&cc.egui_ctx);
-        configure_text_styles(&cc.egui_ctx);
+        monoglu_features::setup_fonts(&cc.egui_ctx);
+        monoglu_features::configure_text_styles(&cc.egui_ctx);
         Self {
             is_logged_in: false,
             dialog_states: DialogStates::default(),
@@ -48,109 +50,4 @@ pub fn run() {
         Box::new(|cc| Box::new(WebApp::new(cc))),
     )
     .expect("failed to start eframe");
-}
-
-// -----------------------------------------------------------------------
-// setup Engilsh / Korean fonts
-
-fn setup_fonts(ctx: &egui::Context) {
-    let mut fonts = egui::FontDefinitions::empty();
-
-    fonts.font_data.insert(
-        "Roboto-Regular".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\Roboto-Regular.ttf"
-        )),
-    );
-
-    fonts.font_data.insert(
-        "NotoSansKR-Regular".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\NotoSansKR-Regular.otf"
-        )),
-    );
-
-    // Some good looking emojis. Use as first priority:
-    fonts.font_data.insert(
-        "NotoEmoji-Regular".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\NotoEmoji-Regular.ttf"
-        ))
-        .tweak(
-            egui::FontTweak {
-                scale: 0.81,           // make it smaller
-                y_offset_factor: -0.2, // move it up
-                y_offset: 0.0,
-            },
-        ),
-    );
-
-    // Bigger emojis, and more. <http://jslegers.github.io/emoji-icon-font/>:
-    fonts.font_data.insert(
-        "emoji-icon-font".to_owned(),
-        egui::FontData::from_static(include_bytes!(
-            "..\\assets\\fonts\\emoji-icon-font.ttf"
-        ))
-        .tweak(
-            egui::FontTweak {
-                scale: 0.88,           // make it smaller
-                y_offset_factor: 0.07, // move it down slightly
-                y_offset: 0.0,
-            },
-        ),
-    );
-
-
-    fonts
-        .families
-        .insert(
-            egui::FontFamily::Proportional,
-            vec![
-                "Roboto-Regular".to_owned(),
-                "NotoSansKR-Regular".to_owned(),
-                "NotoEmoji-Regular".to_owned(),
-                "emoji-icon-font".to_owned(),
-            ],
-        );
-
-    fonts
-        .families
-        .insert(
-            egui::FontFamily::Monospace,
-            vec![
-                "Roboto-Regular".to_owned(),
-                "NotoSansKR-Regular".to_owned(),
-                "emoji-icon-font".to_owned(),
-            ], 
-        );
-
-    ctx.set_fonts(fonts);
-}
-
-// ----------------------------------------------------------------
-// setup verious text size
-
-#[inline]
-fn too_big() -> egui::TextStyle {
-    egui::TextStyle::Name("TooBig".into())
-}
-
-#[inline]
-fn heading3() -> egui::TextStyle {
-    egui::TextStyle::Name("ContextHeading".into())
-}
-
-fn configure_text_styles(ctx: &egui::Context) {
-    let mut style = (*ctx.style()).clone();
-    style.text_styles = [
-        (egui::TextStyle::Heading, egui::FontId::new(25.0, egui::FontFamily::Proportional)),
-        (too_big(), egui::FontId::new(15.0, egui::FontFamily::Proportional)),
-        (heading3(), egui::FontId::new(19.0, egui::FontFamily::Proportional)),
-        (egui::TextStyle::Body, egui::FontId::new(16.0, egui::FontFamily::Proportional)),
-        (egui::TextStyle::Monospace, egui::FontId::new(12.0, egui::FontFamily::Monospace)),
-        (egui::TextStyle::Button, egui::FontId::new(12.0, egui::FontFamily::Proportional)),
-        (egui::TextStyle::Small, egui::FontId::new(8.0, egui::FontFamily::Proportional)),
-    ]
-    .into();
-    ctx.set_style(style);
 }
