@@ -3,8 +3,9 @@ use std::collections::BTreeMap;
 pub struct Cell {
     id: String,
     area: egui::Area,
-    frame: egui::Frame,
     resize: egui::Resize,
+    frame: egui::Frame,
+    contents: Option<Box<dyn Fn(&mut egui::Ui)>>,
 }
 
 impl Cell {
@@ -12,32 +13,50 @@ impl Cell {
         Self {
             id: id.to_string(),
             area: egui::Area::new(id),
-            frame: egui::Frame::none()
-                .inner_margin(0.0)
-                .fill(egui::Color32::GRAY),
-            resize: egui::Resize::default()
-                .resizable(false),
+            resize: egui::Resize::default().resizable(false),
+            frame: egui::Frame::none().fill(egui::Color32::TRANSPARENT),
+            contents: None,
         }
     }
 
-    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, size: &egui::Vec2) {
-        self.area
-            .current_pos(*offset)
-            .movable(false)
-            .show(ctx, |ui| {
-                self.frame.show(ui, |ui| {
-                    self.resize
-                        .fixed_size(*size)
-                        // .default_width(width)
-                        // .default_height(height)
-                        .show(ui, |ui| {
-                            ui.label(&self.id);
-                        });
-                });
+    pub fn add_contents(&mut self, contents: Box<dyn Fn(&mut egui::Ui)>) {
+        self.contents = Some(contents);
+    }
+
+    pub fn view_contents(&self, ui: &mut egui::Ui) {
+        if let Some(contents) = &self.contents {
+            contents(ui);
+        }
+    }
+
+    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, size: &egui::Vec2, margin: f32) {
+        self.area.current_pos(*offset).movable(false).show(ctx, |ui| {
+            self.resize.fixed_size(*size).show(ui, |ui| {
+                self.view_contents(ui);
             });
+        });
     }
 }
 
+/// ```
+/// use crate::cell::Grid;
+/// 
+/// pub struct Example {
+///     grid: Grid,
+/// }
+/// 
+/// impl User {
+///     pub fn new() -> Self {
+///         let mut grid = Grid::new("user_tab_grid", 3, 3);
+///         grid.get_cell(1, 1)
+///             .add_contents(Box::new(|ui: &mut egui::Ui| {
+///                 ui.label("This is the middle cell.");
+///             }));
+/// 
+///         Self { grid }
+///     }
+/// }
+/// ```
 pub struct Grid {
     row: usize,
     col: usize,
@@ -69,6 +88,7 @@ impl Grid {
         let cell_width = ctx.available_rect().width() / self.col as f32;
         let cell_height = ctx.available_rect().height() / self.row as f32;
         let cell_size = egui::vec2(cell_width, cell_height);
+        let cell_margin = ctx.available_rect().width() * 0.02;
 
         for y in 0..self.row {
             for x in 0..self.col {
@@ -76,7 +96,7 @@ impl Grid {
                     ctx.available_rect().min.x + (cell_width * x as f32),
                     ctx.available_rect().min.y + (cell_height * y as f32),
                 );
-                self.get_cell(y, x).show(ctx, &cell_offset, &cell_size);
+                self.get_cell(y, x).show(ctx, &cell_offset, &cell_size, cell_margin);
             }
         }
     }
