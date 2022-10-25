@@ -70,6 +70,37 @@ fn setup_fonts(ctx: &egui::Context) {
         )),
     );
 
+    // Some good looking emojis. Use as first priority:
+    fonts.font_data.insert(
+        "NotoEmoji-Regular".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\NotoEmoji-Regular.ttf"
+        ))
+        .tweak(
+            egui::FontTweak {
+                scale: 0.81,           // make it smaller
+                y_offset_factor: -0.2, // move it up
+                y_offset: 0.0,
+            },
+        ),
+    );
+
+    // Bigger emojis, and more. <http://jslegers.github.io/emoji-icon-font/>:
+    fonts.font_data.insert(
+        "emoji-icon-font".to_owned(),
+        egui::FontData::from_static(include_bytes!(
+            "..\\assets\\fonts\\emoji-icon-font.ttf"
+        ))
+        .tweak(
+            egui::FontTweak {
+                scale: 0.88,           // make it smaller
+                y_offset_factor: 0.07, // move it down slightly
+                y_offset: 0.0,
+            },
+        ),
+    );
+
+
     fonts
         .families
         .insert(
@@ -77,6 +108,8 @@ fn setup_fonts(ctx: &egui::Context) {
             vec![
                 "Roboto-Regular".to_owned(),
                 "NotoSansKR-Regular".to_owned(),
+                "NotoEmoji-Regular".to_owned(),
+                "emoji-icon-font".to_owned(),
             ],
         );
 
@@ -87,6 +120,7 @@ fn setup_fonts(ctx: &egui::Context) {
             vec![
                 "Roboto-Regular".to_owned(),
                 "NotoSansKR-Regular".to_owned(),
+                "emoji-icon-font".to_owned(),
             ], 
         );
 
@@ -110,7 +144,7 @@ fn configure_text_styles(ctx: &egui::Context) {
     let mut style = (*ctx.style()).clone();
     style.text_styles = [
         (egui::TextStyle::Heading, egui::FontId::new(25.0, egui::FontFamily::Proportional)),
-        (too_big(), egui::FontId::new(30.0, egui::FontFamily::Proportional)),
+        (too_big(), egui::FontId::new(15.0, egui::FontFamily::Proportional)),
         (heading3(), egui::FontId::new(19.0, egui::FontFamily::Proportional)),
         (egui::TextStyle::Body, egui::FontId::new(16.0, egui::FontFamily::Proportional)),
         (egui::TextStyle::Monospace, egui::FontId::new(12.0, egui::FontFamily::Monospace)),
