@@ -20,15 +20,16 @@ impl Cell {
         }
     }
 
-    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, width: f32, height: f32) {
+    pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, size: &egui::Vec2) {
         self.area
-            .default_pos(*offset)
-            .movable(true)
+            .current_pos(*offset)
+            .movable(false)
             .show(ctx, |ui| {
                 self.frame.show(ui, |ui| {
                     self.resize
-                        .default_width(width)
-                        .default_height(height)
+                        .fixed_size(*size)
+                        // .default_width(width)
+                        // .default_height(height)
                         .show(ui, |ui| {
                             ui.label(&self.id);
                         });
@@ -40,11 +41,7 @@ impl Cell {
 pub struct Grid {
     row: usize,
     col: usize,
-    area: egui::Area,
-    frame: egui::Frame,
-    resize: egui::Resize,
-    grid: BTreeMap<(usize, usize), Cell>
-    // contents: Vec<Box<dyn egui::Widget>>,
+    grid: BTreeMap<(usize, usize), Cell>,
 }
 
 impl Grid {
@@ -60,12 +57,6 @@ impl Grid {
         Self {
             row,
             col,
-            area: egui::Area::new(id),
-            frame: egui::Frame::none()
-                .inner_margin(0.0)
-                .fill(egui::Color32::BLACK),
-            resize: egui::Resize::default()
-                .resizable(false),
             grid,
         }
     }
@@ -77,6 +68,7 @@ impl Grid {
     pub fn show(&mut self, ctx: &egui::Context) {
         let cell_width = ctx.available_rect().width() / self.col as f32;
         let cell_height = ctx.available_rect().height() / self.row as f32;
+        let cell_size = egui::vec2(cell_width, cell_height);
 
         for y in 0..self.row {
             for x in 0..self.col {
@@ -84,8 +76,7 @@ impl Grid {
                     ctx.available_rect().min.x + (cell_width * x as f32),
                     ctx.available_rect().min.y + (cell_height * y as f32),
                 );
-                log::info!("{:?}", &cell_offset);
-                self.get_cell(y, x).show(ctx, &cell_offset, cell_width, cell_height);
+                self.get_cell(y, x).show(ctx, &cell_offset, &cell_size);
             }
         }
     }
