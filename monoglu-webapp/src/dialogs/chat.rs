@@ -33,7 +33,7 @@ impl super::Dialog for Chat {
             .show(ctx, |ui| {
                 egui::ScrollArea::vertical()
                     .max_height(200.0)
-                    .auto_shrink([false; 2])
+                    .auto_shrink([false, false])
                     .show(ui, |ui| {
                         for (member, message) in &self.chat_inner.contents {
                             ui.vertical(|ui| {

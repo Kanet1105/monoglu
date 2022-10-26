@@ -1,4 +1,4 @@
-use crate::cell::{Grid, Cell};
+use crate::cell::Grid;
 
 pub struct User {
     grid: Grid,
@@ -8,7 +8,7 @@ pub struct User {
 impl User {
     pub fn new() -> Self {
         Self { 
-            grid: Grid::new("user_tab_grid", 4, 5),
+            grid: Grid::new("user_tab_grid", 3, 3),
             selected_achor: "A".to_owned(),
         }
     }
@@ -43,6 +43,19 @@ impl super::Tab for User {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             self.grid.show(ctx);
+
+
+            self.grid.get_cell(0, 0)
+                .add_contents(Box::new(|ui| {
+                    ui.label("This is the top - left cell. 👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕", 	);
+                }));
+
+            self.grid.get_cell(1, 1)
+                .add_contents(Box::new(|ui| {
+                    ui.label(egui::RichText::new("sdff👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕")
+                        .text_style(egui::TextStyle::Name("emoji_big".into()))
+                    );
+                }));
         });
     }
 }

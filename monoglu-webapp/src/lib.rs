@@ -27,8 +27,8 @@ impl WebApp {
 
 impl eframe::App for WebApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        self.dialog_states.update(ctx, frame);
         self.tab_states.update(ctx, frame);
+        // self.dialog_states.update(ctx, frame);
     }
 }
 
