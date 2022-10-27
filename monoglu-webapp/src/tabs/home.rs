@@ -6,9 +6,33 @@ pub struct Home {
 
 impl Home {
     pub fn new() -> Self {
+
+        let mut grid = Grid::new("home", 10, 10);
+
+        for i in 0..10 {
+            for j in 0..10 {
+                grid.get_cell(i, j)
+                .unwrap()
+                .add_contents(Box::new(move |ui| {
+                    ui.label(format!("row:{}, col:{}", i, j));
+                }));    
+            }
+        }
+
         
+        grid.horizontal_merge((1, 3), (1, 4)).unwrap();
+        grid.vertical_merge((2, 1), (3, 1)).unwrap();
+        grid.vertical_merge((2, 2), (3, 2)).unwrap();
+        grid.vertical_merge((2, 3), (3, 3)).unwrap();
+
+        grid.horizontal_merge((6, 3), (6, 5)).unwrap();
+        grid.vertical_merge((6, 3), (7, 3)).unwrap();
+ 
+        
+       
+
         Self {
-            grid: Grid::new("ex", 3, 3),
+            grid,
         }
     }
 }
@@ -21,18 +45,6 @@ impl super::Tab for Home {
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui|{
             self.grid.show(ctx);
-
-            for i in (0..3) {
-                for j in (0..3) {
-                    self.grid.get_cell(j, i)
-                    .add_contents(Box::new(|ui| {
-                        ui.label(format!("Home"));
-                    }));    
-                }
-            }
-
-
-
         });
     }
 }

@@ -46,11 +46,13 @@ impl super::Tab for User {
 
 
             self.grid.get_cell(0, 0)
+                .unwrap()
                 .add_contents(Box::new(|ui| {
                     ui.label("This is the top - left cell. 👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕", 	);
                 }));
 
             self.grid.get_cell(1, 1)
+                .unwrap()
                 .add_contents(Box::new(|ui| {
                     ui.label(egui::RichText::new("sdff👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕")
                         .text_style(egui::TextStyle::Name("emoji_big".into()))
