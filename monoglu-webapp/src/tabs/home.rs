@@ -1,8 +1,15 @@
-pub struct Home;
+use crate::cell::Grid;
+
+pub struct Home {
+    grid: Grid,
+}
 
 impl Home {
     pub fn new() -> Self {
-        Self
+        
+        Self {
+            grid: Grid::new("ex", 3, 3),
+        }
     }
 }
 
@@ -13,7 +20,19 @@ impl super::Tab for Home {
 
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui|{
-            ui.label("Home");
+            self.grid.show(ctx);
+
+            for i in (0..3) {
+                for j in (0..3) {
+                    self.grid.get_cell(j, i)
+                    .add_contents(Box::new(|ui| {
+                        ui.label(format!("Home"));
+                    }));    
+                }
+            }
+
+
+
         });
     }
 }
