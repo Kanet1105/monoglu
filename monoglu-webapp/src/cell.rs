@@ -2,6 +2,9 @@ use std::collections::BTreeMap;
 
 pub struct Cell {
     id: String,
+    row: usize,
+    col: usize,
+    aspect_ratio: egui::Vec2,
     area: egui::Area,
     resize: egui::Resize,
     frame: egui::Frame,
@@ -9,9 +12,12 @@ pub struct Cell {
 }
 
 impl Cell {
-    pub fn new(id: &str) -> Self {
+    pub fn new(id: &str, row: usize, col: usize) -> Self {
         Self {
             id: id.to_string(),
+            row,
+            col,
+            aspect_ratio: egui::vec2(1.0, 1.0),
             area: egui::Area::new(id),
             resize: egui::Resize::default().resizable(false),
             frame: egui::Frame::none().fill(egui::Color32::TRANSPARENT),
@@ -69,7 +75,7 @@ impl Grid {
         for y in 0..row {
             for x in 0..col {
                 let cell_id = format!("{}_inner_{}_{}", id, y, x);
-                grid.insert((y, x), Cell::new(&cell_id));
+                grid.insert((y, x), Cell::new(&cell_id, row, col));
             }
         }
 
@@ -80,8 +86,8 @@ impl Grid {
         }
     }
 
-    pub fn get_cell(&mut self, row: usize, col: usize) -> &mut Cell {
-        self.grid.get_mut(&(row, col)).unwrap()
+    pub fn get_cell(&mut self, row: usize, col: usize) -> Option<&mut Cell> {
+        self.grid.get_mut(&(row, col))
     }
 
     pub fn show(&mut self, ctx: &egui::Context) {
@@ -96,7 +102,11 @@ impl Grid {
                     ctx.available_rect().min.x + (cell_width * x as f32),
                     ctx.available_rect().min.y + (cell_height * y as f32),
                 );
-                self.get_cell(y, x).show(ctx, &cell_offset, &cell_size, cell_margin);
+
+                if let Some(cell) = self.get_cell(y, x) {
+                    cell.show(ctx, &cell_offset, &cell_size, cell_margin);
+                }
+                // self.get_cell(y, x).show(ctx, &cell_offset, &cell_size, cell_margin);
             }
         }
     }
