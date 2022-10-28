@@ -121,7 +121,7 @@ impl Grid {
     pub fn horizontal_merge(&mut self, begin_cell: (usize, usize), end_cell: (usize, usize)) -> Result<(), GridMergeError>{
         //  Begin - end points should be on the same row.
         if begin_cell.0 != end_cell.0 {
-            return Err(GridMergeError::ToBeTheSameRow);
+            return Err(GridMergeError::ToBeOnTheSameRow);
         }
 
         let row = begin_cell.0;
@@ -130,7 +130,7 @@ impl Grid {
 
         // Setting the lower value of colunm to begin column point.
         if begin_cell.1 == end_cell.1 {
-            return  Err(GridMergeError::NotToBeTheSamePoint);
+            return Ok(());      // it is not error, but nothing happened.
         } else if begin_cell.1 < end_cell.1 {
             begin_col = begin_cell.1;
             end_col = end_cell.1;
@@ -145,7 +145,7 @@ impl Grid {
         }
 
         // Before calculating the merging aspect ratio,
-        // begin_cell should not be merged from the other cell.
+        // begin_cell should not be merged by the other cell.
         let mut merging_aspect_ratio: [usize; 2];
         match self.get_cell(row, begin_col) {
             Some(cell) => merging_aspect_ratio = cell.aspect_ratio,
@@ -189,7 +189,7 @@ impl Grid {
     pub fn vertical_merge(&mut self, begin_cell: (usize, usize), end_cell: (usize, usize)) -> Result<(), GridMergeError>{
         //  Begin - end points should be on the same column.
         if begin_cell.1 != end_cell.1 {
-            return Err(GridMergeError::ToBeTheSameCol);
+            return Err(GridMergeError::ToBeOnTheSameCol);
         } 
         
         let col = begin_cell.1;
@@ -198,7 +198,7 @@ impl Grid {
 
         // Setting the lower value of row to begin row point.
         if begin_cell.0 == end_cell.0 {
-            return  Err(GridMergeError::NotToBeTheSamePoint);
+            return Ok(());      // it is not error, but nothing happened.
         } else if begin_cell.0 < end_cell.0 {
             begin_row = begin_cell.0;
             end_row = end_cell.0;
@@ -213,7 +213,7 @@ impl Grid {
         }
 
         // Before calculating the merging aspect ratio,
-        // begin_cell should not be merged from the other cell.
+        // begin_cell should not be merged by the other cell.
         let mut merging_aspect_ratio: [usize; 2];
         match self.get_cell(begin_row, col) {
             Some(cell) => merging_aspect_ratio = cell.aspect_ratio,
@@ -251,13 +251,101 @@ impl Grid {
 
         Ok(())
     }
+
+
+    // /// Begin_cell should be on up/left or the same row/column from end_cell 
+    // pub fn merge(&mut self, begin_cell: (usize, usize), end_cell: (usize, usize)) -> Result<(), GridMergeError> {
+        
+    //     // All of the merging cells should be in the grid.
+    //     if end_cell.0 >= self.row || end_cell.1 >= self.col {
+    //         return  Err(GridMergeError::OutOfGrid);
+    //     } 
+
+    //     let begin_row = begin_cell.0;
+    //     let begin_col = begin_cell.1;
+    //     let expected_row_ratio = end_cell.0 - begin_row + 1;
+    //     let expected_col_ratio = end_cell.1 - begin_col + 1;
+
+    //     let mut intrusive_check_ratio = [0, 0];
+    //     let mut each_row_ratio = vec![0 as usize; expected_row_ratio];
+    //     let mut each_col_ratio = vec![0 as usize; expected_col_ratio];
+        
+    //     // calculating the merging aspect ratio & boundary intrusive check & inner ratio counting
+    //     for row in begin_cell.0..=end_cell.0 {
+    //         for col in begin_cell.1..=end_cell.1 {
+    //             match self.get_cell(row, col) {
+    //                 Some(cell) => {
+    //                     if (row, col) == begin_cell {
+    //                         intrusive_check_ratio = cell.aspect_ratio;
+
+    //                         each_row_ratio[row] += cell.aspect_ratio[0];
+    //                         each_col_ratio[col] += cell.aspect_ratio[1];
+
+    //                     // counting for checking first row should not be intruded by upper cells & inner ratio counting & merging
+    //                     }  else if row > begin_row && col == begin_col {
+    //                         intrusive_check_ratio[1] += cell.aspect_ratio[1];
+    //                         self.grid.remove(&(row, col));
+                        
+    //                         each_row_ratio[row] += cell.aspect_ratio[0];
+    //                         each_col_ratio[col] += cell.aspect_ratio[1];
+
+    //                     // counting for checking first column should not be intruded by left cells & inner ratio counting & merging   
+    //                     } else if row > begin_row && col == begin_col {  
+    //                         intrusive_check_ratio[0] += cell.aspect_ratio[0];
+    //                         self.grid.remove(&(row, col));
+                        
+    //                         each_row_ratio[row] += cell.aspect_ratio[0];
+    //                         each_col_ratio[col] += cell.aspect_ratio[1];
+
+    //                     // inner ratio counting & merging
+    //                     } else {
+    //                         self.grid.remove(&(row, col));
+
+    //                         each_row_ratio[row] += cell.aspect_ratio[0];
+    //                         each_col_ratio[col] += cell.aspect_ratio[1];
+    //                     }
+    //                 }
+    //                 None => {
+    //                     if (row, col) == begin_cell {
+    //                         return Err(GridMergeError::CollisionWithMergedCell);
+    //                     } else {
+    //                         {};
+    //                     }
+    //                 }
+    //             }
+
+    //         }
+    //     }  
+
+    //     // Merged aspect ratio should be matched with expectation ( end - begin + 1 )
+    //     if intrusive_check_ratio != [expected_row_ratio, expected_row_ratio] {
+    //         return Err(GridMergeError::CollisionWithMergedCell);
+    //     }
+
+    //     // intrusive check from inside gird to out 
+    //     for row in each_row_ratio {
+    //         if row > expected_row_ratio {
+    //             return Err(GridMergeError::CollisionWithMergedCell);
+    //         }
+    //     }
+
+    //     for col in each_col_ratio {
+    //         if col > expected_col_ratio {
+    //             return Err(GridMergeError::CollisionWithMergedCell);
+    //         }
+    //     }
+
+    //     // finalizing the aspect ration of the marging first cell.
+    //     self.get_cell(begin_cell.0, begin_cell.1).unwrap();
+
+    //     Ok(())
+    // }
 }
 
 
 pub enum GridMergeError {
-    ToBeTheSameRow,
-    ToBeTheSameCol,
-    NotToBeTheSamePoint,
+    ToBeOnTheSameRow,
+    ToBeOnTheSameCol,
     OutOfGrid,
     CollisionWithMergedCell, 
 }
@@ -271,11 +359,10 @@ impl Debug for GridMergeError {
 impl Display for GridMergeError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            GridMergeError::CollisionWithMergedCell => write!(f, "Collision With Merged Cell"),
-            GridMergeError::NotToBeTheSamePoint => write!(f, "Not To Be The Same Point (begin_cell, end_cell)"),
-            GridMergeError::OutOfGrid => write!(f, "Out Of Grid"),
-            GridMergeError::ToBeTheSameCol => write!(f, "To Be The Same Column"),
-            GridMergeError::ToBeTheSameRow => write!(f, "To Be The Same Row"),
+            GridMergeError::CollisionWithMergedCell => write!(f, "Collision with merged cell"),
+            GridMergeError::OutOfGrid => write!(f, "Out of grid"),
+            GridMergeError::ToBeOnTheSameCol => write!(f, "To be on the same column"),
+            GridMergeError::ToBeOnTheSameRow => write!(f, "To be on the same row"),
         }
     }
 }
