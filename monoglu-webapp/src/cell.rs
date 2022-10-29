@@ -1,13 +1,13 @@
 use std::{
     collections::BTreeMap,
-    fmt::{Debug, Display, write},
+    fmt::{Debug, Display},
 };
 
 pub struct Cell {
     id: String,
     row: usize,
     col: usize,
-    aspect_ratio: [usize; 2],
+    aspect_ratio: egui::Vec2,
     area: egui::Area,
     resize: egui::Resize,
     frame: egui::Frame,
@@ -20,10 +20,12 @@ impl Cell {
             id: id.to_string(),
             row,
             col,
-            aspect_ratio: [1, 1],
+            aspect_ratio: egui::vec2(1.0, 1.0),
             area: egui::Area::new(id),
             resize: egui::Resize::default().resizable(false),
-            frame: egui::Frame::none().fill(egui::Color32::TRANSPARENT).stroke(egui::Stroke::new(2.0, egui::Color32::DARK_GRAY)),
+            frame: egui::Frame::none()
+                .fill(egui::Color32::DARK_GRAY)
+                .stroke(egui::Stroke::new(2.0, egui::Color32::RED)),
             contents: None,
         }
     }
@@ -41,9 +43,11 @@ impl Cell {
     pub fn show(&mut self, ctx: &egui::Context, offset: &egui::Pos2, size: &egui::Vec2, margin: f32) {
         self.area.current_pos(*offset).movable(false).show(ctx, |ui| {
             self.frame.show(ui, |ui| {
-                self.resize.fixed_size(egui::vec2(size.x * self.aspect_ratio[0] as f32, size.y * self.aspect_ratio[1] as f32)*size.x ).show(ui, |ui| {
-                    self.view_contents(ui);
-                });    
+                self.resize
+                    .fixed_size(egui::vec2(size.x * self.aspect_ratio.x, size.y * self.aspect_ratio.y))
+                    .show(ui, |ui| {
+                        self.view_contents(ui);
+                    });
             });
         });
     }
@@ -146,7 +150,7 @@ impl Grid {
 
         // Before calculating the merging aspect ratio,
         // begin_cell should not be merged by the other cell.
-        let mut merging_aspect_ratio: [usize; 2];
+        let mut merging_aspect_ratio: egui::Vec2;
         match self.get_cell(row, begin_col) {
             Some(cell) => merging_aspect_ratio = cell.aspect_ratio,
             None => return Err(GridMergeError::CollisionWithMergedCell),
@@ -157,8 +161,8 @@ impl Grid {
         for col in (begin_col + 1)..=end_col {
             match self.get_cell(row, col) {
                 Some(cell) => {
-                    if merging_aspect_ratio[0] == cell.aspect_ratio[0] {
-                        merging_aspect_ratio[1] = merging_aspect_ratio[1] + cell.aspect_ratio[1];
+                    if merging_aspect_ratio.x == cell.aspect_ratio.x {
+                        merging_aspect_ratio.y = merging_aspect_ratio.y + cell.aspect_ratio.y;
                     } else {
                         return Err(GridMergeError::CollisionWithMergedCell);
                     }
@@ -169,7 +173,7 @@ impl Grid {
 
         // Inspect the result of calculation (It should be the same with length of row)
         // and then remove all merged cells   
-        if merging_aspect_ratio[1] == end_col - begin_col + 1 {
+        if merging_aspect_ratio.y == (end_col - begin_col + 1) as f32 {
             self.get_cell(row, begin_col)
                 .unwrap()
                 .aspect_ratio = merging_aspect_ratio;
@@ -214,7 +218,7 @@ impl Grid {
 
         // Before calculating the merging aspect ratio,
         // begin_cell should not be merged by the other cell.
-        let mut merging_aspect_ratio: [usize; 2];
+        let mut merging_aspect_ratio: egui::Vec2;
         match self.get_cell(begin_row, col) {
             Some(cell) => merging_aspect_ratio = cell.aspect_ratio,
             None => return Err(GridMergeError::CollisionWithMergedCell),
@@ -225,8 +229,8 @@ impl Grid {
         for row in begin_row + 1..=end_row {
             match self.get_cell(row, col) {
                 Some(cell) => {
-                    if merging_aspect_ratio[1] == cell.aspect_ratio[1] {
-                        merging_aspect_ratio[0] = merging_aspect_ratio[0] + cell.aspect_ratio[0];
+                    if merging_aspect_ratio.y == cell.aspect_ratio.y {
+                        merging_aspect_ratio.x = merging_aspect_ratio.x + cell.aspect_ratio.x;
                     } else {
                         return Err(GridMergeError::CollisionWithMergedCell);
                     }
@@ -237,7 +241,7 @@ impl Grid {
 
         // Inspect the result of calculation (It should be the same with length of column)
         // and then remove all merged cells
-        if merging_aspect_ratio[0] == end_row - begin_row + 1 {
+        if merging_aspect_ratio.x == (end_row - begin_row + 1) as f32 {
             self.get_cell(begin_row, col)
                 .unwrap()
                 .aspect_ratio = merging_aspect_ratio;
