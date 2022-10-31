@@ -1,14 +1,51 @@
-use crate::cell::Grid;
+use crate::gridlayout::*;
 
 pub struct User {
-    grid: Grid,
+    grid_layout: GridLayout,
     selected_achor: String,
 }
 
 impl User {
     pub fn new() -> Self {
+        let mut grid_layout = GridLayout::new("user_grid".into(), 2, 3, SizePolicy::responsive(1.0, 1.0));
+        grid_layout.set_y_stretch(1, 5).unwrap();
+        // grid_layout.set_column_stretch(1, 8).unwrap();
+        grid_layout
+            .get_grid(0, 0)
+            .unwrap()
+            .add_contents(Box::new(|ui: &mut egui::Ui| {
+                ui.vertical(|ui| {
+                    ui.label("logo1");
+                });
+            }));
+        grid_layout
+            .get_grid(0, 1)
+            .unwrap()
+            .add_contents(Box::new(|ui: &mut egui::Ui| {
+                ui.vertical(|ui| {
+                    ui.label("logo2");
+                });
+            }));
+        grid_layout
+            .get_grid(1, 0)
+            .unwrap()
+            .add_contents(Box::new(|ui: &mut egui::Ui| {
+                ui.vertical(|ui| {
+                    ui.label("logo3");
+                });
+            }));
+        grid_layout
+            .get_grid(1, 1)
+            .unwrap()
+            .add_contents(Box::new(|ui: &mut egui::Ui| {
+                ui.vertical(|ui| {
+                    ui.label("logo4");
+                });
+            }));
+        
+
         Self { 
-            grid: Grid::new("user_tab_grid", 3, 3),
+            grid_layout,
             selected_achor: "A".to_owned(),
         }
     }
@@ -42,24 +79,7 @@ impl super::Tab for User {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            self.grid.show(ctx);
-
-
-            self.grid.get_cell(0, 0)
-                .unwrap()
-                .add_contents(Box::new(|ui| {
-                    ui.label("This is the top - left cell. 👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕", 	);
-                }));
-
-            self.grid.get_cell(1, 1)
-                .unwrap()
-                .add_contents(Box::new(|ui| {
-                    ui.label(egui::RichText::new("sdff👾 👽 😫🐙 📊 👤 ⛃ 🌾⚘ 🖧 💡 🏢 🔧 🔍 ➕")
-                        .text_style(egui::TextStyle::Name("emoji_big".into()))
-                    );
-                }));
+            self.grid_layout.show(ctx);
         });
     }
 }
-
-
