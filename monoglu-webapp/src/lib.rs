@@ -1,6 +1,7 @@
 mod cell;
 mod data;
 mod dialogs;
+mod gridlayout;
 mod monoglu_features;
 mod tabs;
 
@@ -20,7 +21,7 @@ impl WebApp {
         Self {
             is_logged_in: false,
             dialog_states: DialogStates::default(),
-            tab_states: TabStates::default(),
+            tab_states: TabStates::new(),
         }
     }
 }
