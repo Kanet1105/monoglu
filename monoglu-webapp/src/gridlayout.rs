@@ -95,26 +95,6 @@ impl GridLayout {
         Ok(())
     }
 
-    pub fn get_grid_size(&self, ctx: &egui::Context) -> egui::Vec2 {
-        let grid_size = match self.policy {
-            SizePolicy::Absolute(size) => {
-                let size = self.policy.to_vec().unwrap();
-                egui::vec2(
-                    size.x / self.stretch.x_total(),
-                    size.y / self.stretch.y_total(),
-                )
-            },
-            SizePolicy::Responsive(size) => {
-                let size = self.policy.to_vec().unwrap();
-                egui::vec2(
-                    size.x * ctx.available_rect().width() / self.stretch.x_total(),
-                    size.y * ctx.available_rect().height() / self.stretch.y_total(),
-                )
-            },
-        };
-        grid_size
-    }
-
     pub fn show(&mut self, ctx: &egui::Context) {
         // An offset always starts from the "left-top" corner of the ui.
         let mut offset = egui::pos2(
@@ -122,17 +102,39 @@ impl GridLayout {
             ctx.available_rect().left_top().y,
         );
 
-        let grid_size = self.get_grid_size(ctx);
+        let mut grid_size = egui::Vec2::new(1.0, 1.0);
 
         for y_index in 0..self.y {
+            grid_size.y =match self.policy {
+                SizePolicy::Absolute(size) => {
+                    let size_y = self.policy.to_vec().unwrap().y;
+                    self.stretch.y[y_index] as f32 * size_y / self.stretch.y_total()
+                },
+                SizePolicy::Responsive(size) => {
+                    let size_y = self.policy.to_vec().unwrap().y;
+                    self.stretch.y[y_index] as f32 * size_y * ctx.available_rect().height() / self.stretch.y_total()
+                },                    
+            };
+
             for x_index in 0..self.x {
+                grid_size.x = match self.policy {
+                    SizePolicy::Absolute(size) => {
+                        let size_x = self.policy.to_vec().unwrap().x;
+                        self.stretch.x[x_index] as f32 * size_x / self.stretch.x_total()
+                    },
+                    SizePolicy::Responsive(size) => {
+                        let size_x = self.policy.to_vec().unwrap().x;
+                        self.stretch.x[x_index] as f32 * size_x * ctx.available_rect().width() / self.stretch.x_total()
+                    },
+                };
+
                 if let Some(grid) = self.get_grid(x_index, y_index) {
                     grid.show(ctx, &offset, &grid_size);
                 }
-                offset.x += grid_size.x * self.stretch.get_x_stretch(x_index);
+                offset.x += grid_size.x;
             }
             offset.x = ctx.available_rect().left_top().x;
-            offset.y += grid_size.y * self.stretch.get_y_stretch(y_index);
+            offset.y += grid_size.y;
         }
     }
 }
@@ -149,6 +151,7 @@ impl Stretch {
         let mut x_vec = Vec::with_capacity(x);
         for x_index in 0..x {
             x_vec.push(1);
+            
         }
 
         let mut y_vec = Vec::with_capacity(y);
