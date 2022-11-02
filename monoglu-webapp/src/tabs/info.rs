@@ -1,19 +1,19 @@
-pub struct CompanyInfo;
+pub struct Info;
 
-impl CompanyInfo {
+impl Info {
     pub fn new() -> Self {
         Self
     }
 }
 
-impl super::Tab for CompanyInfo {
+impl super::Tab for Info {
     fn name(&self) -> &'static str {
-        "Company info"
+        "info"
     }
 
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui|{
-            ui.label("Company Info");
+            ui.label("Info");
         });
     }
 }

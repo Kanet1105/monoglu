@@ -1,19 +1,19 @@
-pub struct Plants;
+pub struct Dashboard;
 
-impl Plants {
+impl Dashboard {
     pub fn new() -> Self {
         Self
     }
 }
 
-impl super::Tab for Plants {
+impl super::Tab for Dashboard {
     fn name(&self) -> &'static str {
-        "Plants"
+        "Dashboard"
     }
 
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui|{
-            ui.label("Plants");
+            ui.label("Dashboard");
         });
     }
 }
