@@ -15,7 +15,9 @@ impl User {
             .unwrap()
             .add_contents(Box::new(|ui: &mut egui::Ui| {
                 ui.vertical(|ui| {
-                    ui.label("logo1");
+                    if ui.button("home").clicked() {
+                        ui.output().open_url("/#home");
+                    };
                 });
             }));
         grid_layout
@@ -23,7 +25,9 @@ impl User {
             .unwrap()
             .add_contents(Box::new(|ui: &mut egui::Ui| {
                 ui.vertical(|ui| {
-                    ui.label("logo2");
+                    if ui.button("dashboard").clicked() {
+                        ui.output().open_url("/#dashboard");
+                    };
                 });
             }));
         grid_layout
@@ -31,7 +35,9 @@ impl User {
             .unwrap()
             .add_contents(Box::new(|ui: &mut egui::Ui| {
                 ui.vertical(|ui| {
-                    ui.label("logo3");
+                    if ui.button("info").clicked() {
+                        ui.output().open_url("/#info");
+                    };
                 });
             }));
         grid_layout
@@ -39,7 +45,9 @@ impl User {
             .unwrap()
             .add_contents(Box::new(|ui: &mut egui::Ui| {
                 ui.vertical(|ui| {
-                    ui.label("logo4");
+                    if ui.button("etc").clicked() {
+                        ui.output().open_url("/#etc");
+                    };
                 });
             }));
         
