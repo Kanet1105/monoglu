@@ -5,19 +5,18 @@ mod home;
 mod login;
 mod dashboard;
 mod user;
-
 use std::collections::HashMap;
 
+use crate::gridlayout::{GridLayout, SizePolicy};
+use crate::monoglu_features::Button;
 pub trait Tab {
     fn name(&self) -> &'static str;
     fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame);
 }
-
 pub struct TabStates {
     tabs: HashMap<String, Box<dyn Tab>>,
-    current_tab: String,
+    grid_layout: GridLayout,
 }
-
 impl TabStates {
     pub fn new() -> Self {
         let mut tabs = HashMap::<String, Box<dyn Tab>>::new();
@@ -28,75 +27,57 @@ impl TabStates {
         tabs.insert("#login".into(), Box::new(login::Login::new()));
         tabs.insert("#user".into(), Box::new(user::User::new()));
 
-        Self {
-            tabs,
-            current_tab: "/".to_string(), 
-        }
-    }
+        let mut grid_layout = GridLayout::new("top_panel".into(), 1, 1, SizePolicy::absolute(20.0, 500.0));
 
-    fn main_view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::TopBottomPanel::top("tab").show(&ctx, |ui| {
-            ui.horizontal(|ui| {
-                ui.visuals_mut().button_frame = false;
-                
-                let list = [
-                    ("#home", "HOME"),
-                    ("#dashboard", "DASHBOARD"),
-                    ("#info", "INFO"),
-                    ("#etc", "etc."),
-                    ("#login", "SIGN IN"),
-                    ("#user", "USER"),
-                ];
-
-                if self.current_tab == "/".to_string() {
-                    self.current_tab = "#home".to_string()
-                }
-
-                let mut selected_anchor = self.current_tab.clone();
-                for (anchor, tab) in list {
-                    if ui.add(
-                        crate::monoglu_features::SelectableLabel::new(
-                            &selected_anchor == anchor,
-                            tab
-                        )
-                    ).clicked()
-                    {
-                        selected_anchor = anchor.into();
-                        if frame.is_web() {
-                            ui.output().open_url(anchor.to_string());
+        grid_layout
+            .get_grid(0, 0)
+            .unwrap()
+            .add_contents(Box::new(|ui: &mut egui::Ui| {
+                ui.horizontal(|ui| {
+                    ui.visuals_mut().button_frame = false;
+                    let list = [
+                        ("#home", "HOME"),
+                        ("#dashboard", "DASHBOARD"),
+                        ("#info", "INFO"),
+                        ("#etc", "etc."),
+                        ("#login", "SIGN IN"),
+                        ("#user", "USER"),
+                    ];
+                    for (anchor, tab) in list {
+                        if ui.add(Button::new(tab)).clicked()
+                        {
+                            ui.output().open_url(anchor);
                         }
                     }
-                }
-                self.current_tab = selected_anchor;
-
-            });
-        });
-
-        self.switch(frame);
-        match self.tabs.get_mut(&self.current_tab) {
-            Some(tab) => tab.view(ctx, frame),
-            None => exception::Exception::PageNotFound.view(ctx, frame),
+                });
+            }));
+      
+        Self {
+            tabs,
+            grid_layout,
         }
     }
 
-    pub fn switch(&mut self, frame: &mut eframe::Frame) {
-        self.current_tab = frame
-            .info()
-            .web_info
-            .location
-            .hash
-            .to_owned();
+    fn switch(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        let current_tab = frame
+        .info()
+        .web_info
+        .location
+        .hash
+        .to_owned();
+
+        match self.tabs.get_mut(&current_tab) {
+            Some(tab) => tab.view(&ctx, frame),
+            None => exception::Exception::PageNotFound.view(&ctx, frame),
+        }
     }
 
     pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        egui::TopBottomPanel::top("tab").show(ctx, |ui| {
+            self.grid_layout.show(ctx);
+        });
 
-
-        egui::CentralPanel::default().show(ctx, |ui| {
-            self.main_view(ctx, frame);
-        });    
-
-
+        self.switch(ctx, frame);
     }
-
 }
-    
+
