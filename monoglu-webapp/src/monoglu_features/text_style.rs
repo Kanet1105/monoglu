@@ -1,9 +1,11 @@
-// setup verious text size
-
-#[inline]
-fn size42() -> egui::TextStyle {
-    egui::TextStyle::Name("size42".into())
-}
+/// setup verious text size
+/// 
+/// ```
+/// ui.label(egui::RichText::new("Example").text_style(egui::TextStyle::Heading));
+/// ```
+/// ```    
+/// ui.label(egui::RichText::new("Example").text_style(egui::TextStyle::Name("size24".into())));
+/// ```
 
 #[inline]
 fn size38() -> egui::TextStyle {
@@ -11,8 +13,13 @@ fn size38() -> egui::TextStyle {
 }
 
 #[inline]
+fn size34() -> egui::TextStyle {
+    egui::TextStyle::Name("size34".into())
+}
+
+#[inline]
 fn size32() -> egui::TextStyle {
-    egui::TextStyle::Name("size32".into())
+    egui::TextStyle::Name("size30".into())
 }
 
 #[inline]
@@ -63,8 +70,8 @@ pub fn configure_text_styles(ctx: &egui::Context) {
         (egui::TextStyle::Monospace, egui::FontId::new(14.0, egui::FontFamily::Monospace)),
         (egui::TextStyle::Button, egui::FontId::new(14.0, egui::FontFamily::Proportional)),
         (egui::TextStyle::Small, egui::FontId::new(10.0, egui::FontFamily::Proportional)),
-        (size42(), egui::FontId::new(42.0, egui::FontFamily::Proportional)),
         (size38(), egui::FontId::new(38.0, egui::FontFamily::Proportional)),
+        (size34(), egui::FontId::new(34.0, egui::FontFamily::Proportional)),
         (size32(), egui::FontId::new(32.0, egui::FontFamily::Proportional)),
         (size24(), egui::FontId::new(24.0, egui::FontFamily::Proportional)),
         (size20(), egui::FontId::new(20.0, egui::FontFamily::Proportional)),
