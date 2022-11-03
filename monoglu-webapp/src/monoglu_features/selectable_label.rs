@@ -14,7 +14,7 @@ impl SelectableLabel {
             selected,
             text: text.into(),
             custom_size: None,
-            fill: egui::Color32::GRAY,
+            fill: egui::Color32::from_rgb(249, 249, 249),
             rounding: egui::epaint::Rounding::same(3.0),
             stroke: egui::Stroke::default(),
         }

@@ -19,8 +19,8 @@ impl Button {
         Self {
             text: text.into(),
             wrap: None,
-            fill: Some(egui::Color32::WHITE),
-            stroke: Some(egui::Stroke { width: 1.0, color: egui::Color32::GRAY }),
+            fill: Some(egui::Color32::from_rgb(249, 249, 249)),
+            stroke: Some(egui::Stroke { width: 1.0, color: egui::Color32::from_rgb(249, 249, 249) }),
             sense: egui::Sense::click(),
             small: false,
             frame: Some(true),
