@@ -15,7 +15,7 @@ pub trait Tab {
 }
 pub struct TabStates {
     tabs: HashMap<String, Box<dyn Tab>>,
-    grid_layout: GridLayout,
+    top_layout: GridLayout,
 }
 impl TabStates {
     pub fn new() -> Self {
@@ -29,7 +29,7 @@ impl TabStates {
 
         Self {
             tabs,
-            grid_layout: grid_layout()
+            top_layout: top_layout()
         }
     }
 
@@ -49,17 +49,17 @@ impl TabStates {
 
     pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         egui::TopBottomPanel::top("tab").min_height(30.0).show(ctx, |ui| {
-            self.grid_layout.show(ctx);
+            self.top_layout.show(ctx);
         });
 
         self.switch(ctx, frame);
     }
 }
 
-fn grid_layout() -> GridLayout {
-    let mut grid_layout = GridLayout::new("top_panel".into(), 1, 1, SizePolicy::absolute(800.0, 40.0)); // panel size 에만 영향을 받아 의미가 없는듯??
+fn top_layout() -> GridLayout {
+    let mut top_layout = GridLayout::new("top_layout".into(), 1, 1, SizePolicy::absolute(800.0, 40.0)); // panel size 에만 영향을 받아 의미가 없는듯??
 
-    grid_layout
+    top_layout
         .get_grid(0, 0)
         .unwrap()
         .add_contents(Box::new(|ui: &mut egui::Ui| {
@@ -90,10 +90,9 @@ fn grid_layout() -> GridLayout {
                         }
                     }
                 });
-
                 ui.add_space(8.0);
             });
         }));
     
-    grid_layout
+    top_layout
 }
