@@ -27,34 +27,9 @@ impl TabStates {
         tabs.insert("#login".into(), Box::new(login::Login::new()));
         tabs.insert("#user".into(), Box::new(user::User::new()));
 
-        let mut grid_layout = GridLayout::new("top_panel".into(), 1, 1, SizePolicy::absolute(20.0, 500.0));
-
-        grid_layout
-            .get_grid(0, 0)
-            .unwrap()
-            .add_contents(Box::new(|ui: &mut egui::Ui| {
-                ui.horizontal(|ui| {
-                    ui.visuals_mut().button_frame = false;
-                    let list = [
-                        ("#home", "HOME"),
-                        ("#dashboard", "DASHBOARD"),
-                        ("#info", "INFO"),
-                        ("#etc", "etc."),
-                        ("#login", "SIGN IN"),
-                        ("#user", "USER"),
-                    ];
-                    for (anchor, tab) in list {
-                        if ui.add(Button::new(tab)).clicked()
-                        {
-                            ui.output().open_url(anchor);
-                        }
-                    }
-                });
-            }));
-      
         Self {
             tabs,
-            grid_layout,
+            grid_layout: grid_layout()
         }
     }
 
@@ -73,7 +48,7 @@ impl TabStates {
     }
 
     pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::TopBottomPanel::top("tab").show(ctx, |ui| {
+        egui::TopBottomPanel::top("tab").min_height(30.0).show(ctx, |ui| {
             self.grid_layout.show(ctx);
         });
 
@@ -81,3 +56,44 @@ impl TabStates {
     }
 }
 
+fn grid_layout() -> GridLayout {
+    let mut grid_layout = GridLayout::new("top_panel".into(), 1, 1, SizePolicy::absolute(800.0, 40.0)); // panel size 에만 영향을 받아 의미가 없는듯??
+
+    grid_layout
+        .get_grid(0, 0)
+        .unwrap()
+        .add_contents(Box::new(|ui: &mut egui::Ui| {
+            ui.vertical(|ui| {
+                ui.add_space(8.0);
+
+                ui.horizontal(|ui| {
+                    ui.add_space(8.0);
+
+                    ui.visuals_mut().button_frame = false;
+                    let list = [
+                        ("#home", "HOME"),
+                        ("#dashboard", "DASHBOARD"),
+                        ("#info", "INFO"),
+                        ("#etc", "etc."),
+                        ("#login", "SIGN IN"),
+                        ("#user", "USER"),
+                    ];
+                    for (anchor, tab) in list {
+                        if ui.add(Button::new(
+                            egui::RichText::new(tab)
+                                .text_style(egui::TextStyle::Body)
+                                .color(egui::Color32::from_rgb(100, 100, 100))
+                            )
+                        ).clicked()
+                        {
+                            ui.output().open_url(anchor);
+                        }
+                    }
+                });
+
+                ui.add_space(8.0);
+            });
+        }));
+    
+    grid_layout
+}
