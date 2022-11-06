@@ -47,7 +47,7 @@ pub struct GridLayout {
 
 impl GridLayout {
     pub fn new(id: String, x: usize, y: usize, policy: SizePolicy) -> Self {
-        let mut stretch = Stretch::new(x, y);
+        let stretch = Stretch::new(x, y);
 
         let mut grid = HashMap::<(usize, usize), Grid>::new();
         for y_index in 0..y {
@@ -106,11 +106,11 @@ impl GridLayout {
 
         for y_index in 0..self.y {
             grid_size.y =match self.policy {
-                SizePolicy::Absolute(size) => {
+                SizePolicy::Absolute(_size) => {
                     let size_y = self.policy.to_vec().unwrap().y;
                     self.stretch.y[y_index] as f32 * size_y / self.stretch.y_total()
                 },
-                SizePolicy::Responsive(size) => {
+                SizePolicy::Responsive(_size) => {
                     let size_y = self.policy.to_vec().unwrap().y;
                     self.stretch.y[y_index] as f32 * size_y * ctx.available_rect().height() / self.stretch.y_total()
                 },                    
@@ -118,11 +118,11 @@ impl GridLayout {
 
             for x_index in 0..self.x {
                 grid_size.x = match self.policy {
-                    SizePolicy::Absolute(size) => {
+                    SizePolicy::Absolute(_size) => {
                         let size_x = self.policy.to_vec().unwrap().x;
                         self.stretch.x[x_index] as f32 * size_x / self.stretch.x_total()
                     },
-                    SizePolicy::Responsive(size) => {
+                    SizePolicy::Responsive(_size) => {
                         let size_x = self.policy.to_vec().unwrap().x;
                         self.stretch.x[x_index] as f32 * size_x * ctx.available_rect().width() / self.stretch.x_total()
                     },
@@ -149,13 +149,13 @@ pub struct Stretch {
 impl Stretch {
     pub fn new(x: usize, y: usize) -> Self {
         let mut x_vec = Vec::with_capacity(x);
-        for x_index in 0..x {
+        for _ in 0..x {
             x_vec.push(1);
             
         }
 
         let mut y_vec = Vec::with_capacity(y);
-        for y_index in 0..y {
+        for _ in 0..y {
             y_vec.push(1);
         }
 

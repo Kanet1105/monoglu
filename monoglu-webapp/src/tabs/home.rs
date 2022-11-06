@@ -1,4 +1,3 @@
-use crate::cell::Grid;
 
 pub struct Home {}
 
@@ -13,8 +12,8 @@ impl super::Tab for Home {
         "Home"
     }
 
-    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui|{
+    fn view(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame, _data_states: &crate::data::DataStates) {
+        egui::CentralPanel::default().show(ctx, |_ui|{
            
         });
     }

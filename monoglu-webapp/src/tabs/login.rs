@@ -126,7 +126,7 @@ impl super::Tab for Login {
         "Login"
     }
 
-    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn view(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame, _data_states: &crate::data::DataStates) {
         egui::CentralPanel::default()
             .show(ctx, |ui| {
                 self.ui(ui);

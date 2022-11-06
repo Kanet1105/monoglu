@@ -2,5 +2,5 @@
 target = "index.html"
 release = false
 dist = "dist"
-public_url = "http://127.0.0.1:8080/"
+public_url = "/"
 filehash = false
