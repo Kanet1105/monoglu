@@ -64,7 +64,7 @@ impl super::Tab for User {
         "User"
     }
 
-    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn view(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame, _value_states: &crate::data::DataStates) {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal_wrapped(|ui| {
                 ui.visuals_mut().button_frame = false;
@@ -86,7 +86,7 @@ impl super::Tab for User {
             });
         });
 
-        egui::CentralPanel::default().show(ctx, |ui| {
+        egui::CentralPanel::default().show(ctx, |_ui| {
             self.grid_layout.show(ctx);
         });
     }

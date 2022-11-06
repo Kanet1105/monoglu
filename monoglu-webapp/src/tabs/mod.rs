@@ -1,5 +1,6 @@
 mod info;
-mod etc;
+mod test1;
+mod test2;
 mod exception;
 mod home;
 mod login;
@@ -9,13 +10,16 @@ use std::collections::HashMap;
 
 use crate::gridlayout::{GridLayout, SizePolicy};
 use crate::monoglu_features::Button;
+use crate::data::DataStates;
+
 pub trait Tab {
     fn name(&self) -> &'static str;
-    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame);
+    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame, data_states: &crate::data::DataStates);
 }
 pub struct TabStates {
     tabs: HashMap<String, Box<dyn Tab>>,
     top_layout: GridLayout,
+    data_states: DataStates,
 }
 impl TabStates {
     pub fn new() -> Self {
@@ -23,13 +27,15 @@ impl TabStates {
         tabs.insert("#home".into(), Box::new(home::Home::new()));
         tabs.insert("#dashboard".into(), Box::new(dashboard::Dashboard::new()));
         tabs.insert("#info".into(), Box::new(info::Info::new()));
-        tabs.insert("#etc".into(), Box::new(etc::Etc::new()));
+        tabs.insert("#test1".into(), Box::new(test1::Test1::new()));
+        tabs.insert("#test2".into(), Box::new(test2::Test2::new()));
         tabs.insert("#login".into(), Box::new(login::Login::new()));
         tabs.insert("#user".into(), Box::new(user::User::new()));
 
         Self {
             tabs,
-            top_layout: top_layout()
+            top_layout: top_layout(),
+            data_states: DataStates::new(),
         }
     }
 
@@ -42,13 +48,13 @@ impl TabStates {
         .to_owned();
 
         match self.tabs.get_mut(&current_tab) {
-            Some(tab) => tab.view(&ctx, frame),
-            None => exception::Exception::PageNotFound.view(&ctx, frame),
+            Some(tab) => tab.view(&ctx, frame, &self.data_states),
+            None => exception::Exception::PageNotFound.view(&ctx, frame, &self.data_states),
         }
     }
 
     pub fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::TopBottomPanel::top("tab").min_height(30.0).show(ctx, |ui| {
+        egui::TopBottomPanel::top("tab").min_height(30.0).show(ctx, |_ui| {
             self.top_layout.show(ctx);
         });
 
@@ -74,9 +80,10 @@ fn top_layout() -> GridLayout {
                         ("#home", "HOME"),
                         ("#dashboard", "DASHBOARD"),
                         ("#info", "INFO"),
-                        ("#etc", "etc."),
                         ("#login", "SIGN IN"),
                         ("#user", "USER"),
+                        ("#test1", "TEST1"),
+                        ("#test2", "TEST2"),
                     ];
                     for (anchor, tab) in list {
                         if ui.add(Button::new(

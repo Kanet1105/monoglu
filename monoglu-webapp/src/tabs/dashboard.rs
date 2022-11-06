@@ -33,38 +33,38 @@ impl super::Tab for Dashboard {
         "Dashboard"
     }
 
-    fn view(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+    fn view(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame, _data_states: &crate::data::DataStates) {
         let browser_width = ctx.available_rect().width();
 
         if browser_width < 550.0 {
-            egui::CentralPanel::default().show(ctx, |ui|{
+            egui::CentralPanel::default().show(ctx, |_ui|{
                 self.general_mobile.show(ctx);
                 self.detail_mobile.show(ctx);
                 self.graph_mobile.show(ctx);
             });            
 
         } else if browser_width < 1100.0 {
-            egui::TopBottomPanel::top("general_normal").min_height(30.0).show(ctx, |ui| {
+            egui::TopBottomPanel::top("general_normal").min_height(30.0).show(ctx, |_ui| {
                 self.general_normal.show(ctx);
             });
 
-            egui::SidePanel::left("detail_normal").min_width(200.0).show(ctx, |ui| {
+            egui::SidePanel::left("detail_normal").min_width(200.0).show(ctx, |_ui| {
                 self.detail_normal.show(ctx);
             });
 
-            egui::CentralPanel::default().show(ctx, |ui|{
+            egui::CentralPanel::default().show(ctx, |_ui|{
                 self.general_normal.show(ctx);
             });
         } else {
-            egui::SidePanel::left("general_wide").min_width(200.0).show(ctx, |ui| {
+            egui::SidePanel::left("general_wide").min_width(200.0).show(ctx, |_ui| {
                 self.general_wide.show(ctx);
             });
 
-            egui::SidePanel::left("detail_wide").min_width(400.0).show(ctx, |ui| {
+            egui::SidePanel::left("detail_wide").min_width(400.0).show(ctx, |_ui| {
                 self.detail_wide.show(ctx);
             });
 
-            egui::CentralPanel::default().show(ctx, |ui| {
+            egui::CentralPanel::default().show(ctx, |_ui| {
                 self.general_wide.show(ctx);
             });
         }
@@ -75,49 +75,47 @@ impl super::Tab for Dashboard {
 
 
 fn general_mobile() -> GridLayout {
-    let mut layout = GridLayout::new("general_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
-    
-
+    let layout = GridLayout::new("general_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
     layout
 }
 
 fn general_normal() -> GridLayout {
-    let mut layout = GridLayout::new("general_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("general_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn general_wide() -> GridLayout {
-    let mut layout = GridLayout::new("general_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("general_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn detail_mobile() -> GridLayout {
-    let mut layout = GridLayout::new("detail_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("detail_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn detail_normal() -> GridLayout {
-    let mut layout = GridLayout::new("detail_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("detail_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn detail_wide() -> GridLayout {
-    let mut layout = GridLayout::new("detail_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("detail_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn graph_mobile() -> GridLayout {
-    let mut layout = GridLayout::new("graph_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("graph_mobile".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn graph_normal() -> GridLayout {
-    let mut layout = GridLayout::new("graph_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("graph_normal".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
 fn graph_wide() -> GridLayout {
-    let mut layout = GridLayout::new("graph_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
+    let layout = GridLayout::new("graph_wide".into(), 1, 1, SizePolicy::responsive(1.0, 1.0));
 
     layout
 }
