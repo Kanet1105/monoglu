@@ -51,7 +51,7 @@ impl Test1 {
             event_time: Rc::new(RefCell::new(Utc::now())),
             occurance: Rc::new(RefCell::new(false)),
             x: Arc::new(Mutex::new(0)),
-            y: Arc::new(Mutex::new(10)),
+            y: Arc::new(Mutex::new(0)),
         }
     }
 }
@@ -68,8 +68,8 @@ impl Test2 {
         Self {
             // event_time: std::time::Instant::now(),
             // occurance: false,
-            a: Arc::new(Mutex::new(100.1)),
-            b: Arc::new(Mutex::new(-100.1)),
+            a: Arc::new(Mutex::new(0.0)),
+            b: Arc::new(Mutex::new(0.0)),
         }
     }
 }

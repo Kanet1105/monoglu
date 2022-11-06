@@ -1,5 +1,7 @@
+use std::fmt::format;
+use chrono::Utc;
+
 use crate::data::DataStates;
-use chrono::{DateTime, Utc};
 
 pub struct Test1;
 

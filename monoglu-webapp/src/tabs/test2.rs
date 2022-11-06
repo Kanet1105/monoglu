@@ -1,6 +1,5 @@
-use crate::data::{DataStates, self};
+use crate::data::DataStates;
 use chrono::{Duration, Utc};
-
 pub struct Test2 {}
 
 impl Test2 {
@@ -34,8 +33,6 @@ impl super::Tab for Test2 {
                     // }
 
                     // ui.separator();
-
-                    
 
                     if  *occurance.borrow() {
                         let duration = (Utc::now() - *data_states.d1.event_time.borrow()).num_seconds();
