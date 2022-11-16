@@ -4,7 +4,7 @@ pub mod prelude {
     pub type Exception = Box<dyn std::error::Error>;
     pub type Result<T> = std::result::Result<T, Exception>;
 
-    pub use crate::run;
+    pub use crate::run_server;
     pub use tracing::{error, info};
 }
 
@@ -14,7 +14,7 @@ use tokio::{
     io::AsyncWriteExt
 };
 
-pub async fn run() -> Result<()> {
+pub async fn run_server() -> Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7627").await?;
     
     loop {
