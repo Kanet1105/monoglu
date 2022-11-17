@@ -7,49 +7,74 @@ pub mod prelude {
 
     pub use crate::{
         run_server,
-        data::AppData,
+        data::{Config, Storage},
         event::dispatch,
     };
     pub use tracing::{error, info};
 }
 
 use crate::prelude::*;
+use bytes::{BufMut, BytesMut};
 use rand::prelude::*;
+use sha2::{Digest, Sha256};
+use std::{
+    collections::HashMap,
+    io::ErrorKind, 
+    net::SocketAddr, 
+};
 use tokio::{
-    net::{TcpListener, TcpStream, UdpSocket}, 
-    io::AsyncWriteExt,
-    sync::mpsc,
+    io::{copy, split, AsyncReadExt, AsyncWriteExt},
+    net::{TcpListener, TcpStream, UdpSocket},
+    sync::{mpsc, Mutex},
 };
 
 use tokio::time::{sleep, Duration, Instant};
 
 pub async fn run_server() -> Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7627").await?;
-    let app_data = AppData::new();
-
-    let (tx, mut rx) = mpsc::channel(10);
-    dispatch(app_data.clone(), |data: AppData| async move {
-        loop {
-            match rx.recv().await {
-                Some(value) => {
-                    info!("{}", value);
-                },
-                None => {
-                    continue;
-                }
-            }
-        }
-    });
 
     loop {
-        // tx.send("Hello, world!").await?;
-        // sleep(Duration::from_millis(1000)).await;
-        let (stream, _address) = listener.accept().await?;
+        let (stream, address) = listener.accept().await?;
         connection_handler(stream).await?;
     }
 }
 
 pub async fn connection_handler(mut stream: TcpStream) -> Result<()> {
-    stream.shutdown().await?;
+    let mut buffer = BytesMut::with_capacity(1024);
+    
+    tokio::spawn(async move {
+        loop {
+            stream.readable().await.unwrap();
+
+            match stream.try_read_buf(&mut buffer) {
+                Ok(0) => {
+                    error!("stream's read half is closed.");
+                    break;
+                }
+                Ok(n) => {
+                    info!("received {} bytes.", n);
+                    
+                    continue;
+                },
+                Err(e) if e.kind() == ErrorKind::WouldBlock => {
+                    continue;
+                },
+                Err(e) => {
+                    error!("{}", e);
+                    break;
+                }
+            }
+        }
+        stream.shutdown().await.unwrap();
+    });
+
     Ok(())
+}
+
+pub fn authenticate_node() {}
+
+pub fn generate_key() {
+    let mut hasher = Sha256::new();
+    hasher.update("Hello, node!");
+    let key: String = format!("{:x}", hasher.finalize());
 }
