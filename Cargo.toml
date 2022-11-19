@@ -3,6 +3,7 @@
 members = [
     "monoglu-auth",
     "monoglu-platter",
+    "monoglu-menu",
     "monoglu-testserver",
     "monoglu-webapp",
     "yew-template",
