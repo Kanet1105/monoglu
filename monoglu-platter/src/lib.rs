@@ -1,40 +1,35 @@
-mod data;
-mod event;
+mod configuration;
+mod database;
 
 pub mod prelude {
     pub type Exception = Box<dyn std::error::Error>;
     pub type Result<T> = std::result::Result<T, Exception>;
 
     pub use crate::{
-        run_server,
-        data::{Config, Storage},
-        event::dispatch,
+        run_server, 
+        user_input, 
+        configuration::Config,
+        database::{DatabaseBuilder, Database},
     };
     pub use tracing::{error, info};
 }
 
 use crate::prelude::*;
 use bytes::{BufMut, BytesMut};
-use rand::prelude::*;
-use sha2::{Digest, Sha256};
-use std::{
-    collections::HashMap,
-    io::ErrorKind, 
-    net::SocketAddr, 
-};
+use std::{io::ErrorKind};
 use tokio::{
     io::{copy, split, AsyncReadExt, AsyncWriteExt},
-    net::{TcpListener, TcpStream, UdpSocket},
-    sync::{mpsc, Mutex},
+    net::{TcpListener, TcpStream},
 };
 
-use tokio::time::{sleep, Duration, Instant};
-
 pub async fn run_server() -> Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:7627").await?;
+    let config = Config::from_file("./Config.toml")?;
+    let listener = TcpListener::bind(config.server.address()).await?;
+    // TODO(): Create a database instance.
+    // let db = DatabaseBuilder::InfluxDB::init();
 
     loop {
-        let (stream, address) = listener.accept().await?;
+        let (stream, _address) = listener.accept().await?;
         connection_handler(stream).await?;
     }
 }
@@ -71,10 +66,8 @@ pub async fn connection_handler(mut stream: TcpStream) -> Result<()> {
     Ok(())
 }
 
-pub fn authenticate_node() {}
-
-pub fn generate_key() {
-    let mut hasher = Sha256::new();
-    hasher.update("Hello, node!");
-    let key: String = format!("{:x}", hasher.finalize());
+pub fn user_input() -> String {
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
+    input
 }
