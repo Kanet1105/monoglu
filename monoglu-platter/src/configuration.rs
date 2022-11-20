@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::{fs, io::stdin, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 #[derive(Deserialize, Serialize)]
 pub struct Config {
