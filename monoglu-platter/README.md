@@ -1,5 +1,3 @@
 # platter
 
-Service discovery
-
-TODO: implement a distributed consensus algorithm.
+Streaming client for time-series databases & kv store.
