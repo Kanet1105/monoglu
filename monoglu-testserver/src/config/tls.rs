@@ -30,8 +30,8 @@ impl TLS {
         Ok(Self { cert_path, key_path })
     }
 
-    /// [rustls::key::Certificate] => contains public key. \
-    /// [rustls::key::PrivateKey] => The private key must be 
+    /// * [rustls::key::Certificate] => contains public key. \
+    /// * [rustls::key::PrivateKey] => The private key must be 
     /// DER-encoded ASN.1 in either PKCS#8 or PKCS#1 format.
     pub fn load_cert(&self) -> Result<(Certificate, PrivateKey)> {
         let cert = Certificate(fs::read(&self.cert_path)?);
