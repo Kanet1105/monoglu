@@ -2,6 +2,7 @@ use crate::prelude::*;
 use std::fs;
 use std::path::PathBuf;
 
+#[allow(unused)]
 pub fn generate_pem(path: &str, name: &str) -> Result<()> {
     fs::create_dir_all(path)?;
     let mut cert_path = PathBuf::from(path);
