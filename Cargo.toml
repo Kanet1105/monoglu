@@ -5,5 +5,4 @@ members = [
     "monoglu-platter",
     "monoglu-testserver",
     "monoglu-webapp",
-    "monoglu-gateway",
 ]
