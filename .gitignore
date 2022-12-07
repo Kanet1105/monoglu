@@ -1,7 +1,2 @@
 /target
 Cargo.lock
-monoglu-auth/dist
-monoglu-auth/Config.toml
-monoglu-storage/data
-monoglu-webapp/Cargo.lock
-monoglu-webapp/dist
