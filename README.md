@@ -7,4 +7,4 @@
 > HA cluster manager.
 
 ## Core
-> Distributed worker node.
+> Utility libraries
