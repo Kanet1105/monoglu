@@ -15,3 +15,4 @@ default = []
 crate-type = ["rlib"]
 
 [dependencies]
+mio = "0.8"
