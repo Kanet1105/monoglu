@@ -1,7 +1,10 @@
 # MONOGLU
 
+## Gateway
+> Software load balancer.
+
 ## Interface
-> User interface written in egui
+> User interface written in egui.
 
 ## Manager
 > HA cluster manager.
