@@ -1,5 +1,5 @@
 [workspace]
 
 members = [
-    "monoglu-core",
+    "monoglu-util",
 ]
