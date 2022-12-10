@@ -15,4 +15,4 @@ default = []
 crate-type = ["rlib"]
 
 [dependencies]
-mio = "0.8"
+log = "0.4.17"
