@@ -1,0 +1,9 @@
+[package]
+name = "monoglu"
+version = "0.1.0"
+authors = ["Donghoon Lee <zombiedelah@gmail.com>", "Yonggon Yun<y2gon2@gmail.com>"]
+edition = "2021"
+repository = "https://github.com/kanet1105/monoglu"
+rust-version = "1.65.0"
+
+[dependencies]
