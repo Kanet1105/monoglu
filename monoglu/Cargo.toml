@@ -6,4 +6,8 @@ edition = "2021"
 repository = "https://github.com/kanet1105/monoglu"
 rust-version = "1.65.0"
 
+[[bin]]
+name = "app"
+path = "src/app/app.rs"
+
 [dependencies]
