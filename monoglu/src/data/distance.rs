@@ -1,15 +1,21 @@
 use super::Interface;
-use rand::{prelude::*, distributions::Uniform};
+use rand::{distributions::Uniform, prelude::*};
 
 pub struct Distance {
-    in_cm: f32,
+    in_cm: f64,
 }
 
 impl Distance {
     pub fn new() -> Self {
         let mut rng = rand::thread_rng();
         let uniform = Uniform::new(0.0, 100.0);
-        Self { in_cm: uniform.sample(&mut rng) }
+        Self {
+            in_cm: uniform.sample(&mut rng),
+        }
+    }
+
+    pub fn update_distance(&mut self, dist: f64) {
+        self.in_cm = dist;
     }
 }
 
