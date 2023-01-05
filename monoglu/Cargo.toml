@@ -11,3 +11,5 @@ name = "app"
 path = "src/app/app.rs"
 
 [dependencies]
+bytes = "1"
+rand = "0.8.5"
